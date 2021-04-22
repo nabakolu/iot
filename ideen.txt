@@ -1,0 +1,3 @@
+Smarte Fenster + Rolläden
+
+Sensoren: Temperatur (innen und außen), Regen, Wind, CO2-Gehalt
