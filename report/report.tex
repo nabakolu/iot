@@ -1,0 +1,89 @@
+% This is samplepaper.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.20 of 2017/10/04
+%
+\documentclass[runningheads]{llncs}
+%
+\usepackage{graphicx}
+
+\begin{document}
+%
+\title{Come Up with a Title for Your Project}
+
+\author{Group ID: First Author \and
+Second Author \and
+Third Author}
+
+\institute{Service Computing Department, IAAS, University of Stuttgart
+\email{firstname.lastname@uni-stuttgart.de}}
+%
+\maketitle              % typeset the header of the contribution
+%
+\begin{abstract}
+The abstract should briefly summarize the contents of the report in
+150--250 words. 
+
+\keywords{First keyword  \and Second keyword \and Another keyword.}
+\end{abstract}
+%
+%
+%
+\section{System Introduction}
+Describe the scope (background information and problem statement) and the goals of your project.
+
+Table~\ref{tab1} an example of a table.
+
+\begin{table}
+\caption{Table captions should be placed above the
+tables.}\label{tab1}
+\begin{tabular}{|l|l|}
+\hline
+Item & Deadline \\
+\hline
+I1 & D1 \\
+I2 & D2 \\
+I3 & D3 \\
+I4 & D4 \\
+I5 & D5 \\
+\hline
+\end{tabular}
+\end{table}
+
+Fig.~\ref{fig1} gives an example of a figure.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{fig1}
+\caption{A figure caption is always placed below the illustration.
+Please note that short captions are centered, while long ones are
+justified by the macro package automatically.} \label{fig1}
+\end{figure}
+
+For citations of references, we prefer the use of square brackets
+and consecutive numbers. The following bibliography provides
+a sample reference list with entries for journal
+articles~\cite{ref_article1}, a book~\cite{ref_book1}, proceedings without editors~\cite{ref_proc1},
+and a homepage~\cite{ref_url1}. Multiple citations are grouped
+\cite{ref_article1,ref_book1},
+\cite{ref_article1,ref_book1,ref_proc1,ref_url1}.
+
+\section{System Analysis}
+Describe the user requirements of your system.
+
+\section{System Architecture Design}
+Describe and provide a design of the architecture of your system.
+
+\section{System Implementation}
+Describe the implementation of your system. This section is only relevant for the report and should be omitted for the project description. 
+
+\section{Discussion and Conclusions}
+Here you can discuss some interesting points or limitations of your system and conclude the report.
+
+%
+% ---- Bibliography ----
+%
+\bibliographystyle{splncs04}
+\bibliography{mybib}
+
+All links were last followed on April 17, 2020.
+
+\end{document}
