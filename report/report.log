@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux) (preloaded format=pdflatex 2021.4.12)  29 APR 2021 11:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux) (preloaded format=pdflatex 2021.4.29)  3 MAY 2021 16:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -177,8 +177,7 @@ File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 File: l3backend-pdftex.def 2020-09-24 L3 backend support: PDF output (pdfTeX)
 \l__kernel_color_stack_int=\count281
 \l__pdf_internal_box=\box95
-)
-No file report.aux.
+) (./report.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
@@ -219,22 +218,16 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 20.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 20.
-
-
-LaTeX Warning: Reference `tab1' on page 1 undefined on input line 34.
-
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <9> on input line 39.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 39.
-
-LaTeX Warning: Reference `fig1' on page 1 undefined on input line 52.
-
 <fig1.png, id=1, 413.1435pt x 496.254pt>
 File: fig1.png Graphic file (type png)
 <use fig1.png>
 Package pdftex.def Info: fig1.png  used on input line 55.
 (pdftex.def)             Requested size: 347.12354pt x 416.9641pt.
+
 
 LaTeX Warning: Citation `ref_article1' on page 1 undefined on input line 64.
 
@@ -269,30 +262,23 @@ LaTeX Warning: Citation `ref_url1' on page 1 undefined on input line 67.
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2 <./fig1.PNG>]
 No file report.bbl.
-[3] (./report.aux)
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
- ) 
+[3] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 1632 strings out of 479383
- 22851 string characters out of 5875830
- 307085 words of memory out of 5000000
- 18770 multiletter control sequences out of 15000+600000
+ 1635 strings out of 479383
+ 22881 string characters out of 5875830
+ 307092 words of memory out of 5000000
+ 18771 multiletter control sequences out of 15000+600000
  407583 words of font info for 41 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  66i,7n,72p,306b,223s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/
-texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmbx9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/s
-hare/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/texmf-dist
-/fonts/type1/public/cm-super/sfrm0900.pfb>
-Output written on report.pdf (3 pages, 146964 bytes).
+{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts
+1.enc}</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sh
+are/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist
+/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></us
+r/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb>
+Output written on report.pdf (3 pages, 149466 bytes).
 PDF statistics:
  46 PDF objects out of 1000 (max. 8388607)
  31 compressed objects within 1 object stream
