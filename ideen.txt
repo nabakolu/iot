@@ -1,3 +1,23 @@
-Smarte Fenster + Rolläden + Heizung
+Smarte Fenster + Rolläden + Heizung IM BÜRO
 
-Sensoren: Temperatur (innen und außen), Regen, Wind, CO2-Gehalt
+Must have:
+	Aktuatoren: Fenster, Rolladen
+	Sensoren:  CO2, Temperatur, Sonne
+
+nice to have: 
+	Aktuatoren: Heizung
+	Sensoren: Wind, Regen, Lautstärke, Online Weather API -> Vorhersage
+
+
+Echte Aktuatoren:
+	Fenster, Rolladen
+
+Mock Aktuatoren:
+	Heizung
+
+Echte Sensoren:
+	Sonne, Wind, Lautstärke
+
+Mock Sensoren:
+	Weather API, CO2
+
