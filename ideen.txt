@@ -20,4 +20,3 @@ Echte Sensoren:
 
 Mock Sensoren:
 	Weather API, CO2
-..
