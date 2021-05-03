@@ -1,40 +1,38 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/Arch Linux) (preloaded format=pdflatex 2021.4.29)  3 MAY 2021 16:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (MiKTeX 21.2) (preloaded format=pdflatex 2021.5.3)  3 MAY 2021 16:58
 entering extended mode
- restricted \write18 enabled.
- %&-line parsing enabled.
-**report.tex
-(./report.tex
-LaTeX2e <2020-10-01> patch level 2
-L3 programming layer <2020-12-03> xparse <2020-03-03> (./llncs.cls
+**./report.tex
+(report.tex
+LaTeX2e <2020-10-01> patch level 4
+L3 programming layer <2021-02-18> xparse <2020-03-03> (llncs.cls
 Document Class: llncs 2018/03/10 v2.20 
  LaTeX document class for Lecture Notes in Computer Science
-(/usr/share/texmf-dist/tex/latex/base/article.cls
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
 Document Class: article 2020/04/10 v1.4m Standard LaTeX document class
-(/usr/share/texmf-dist/tex/latex/base/size10.clo
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo
 File: size10.clo 2020/04/10 v1.4m Standard LaTeX file (size option)
 )
-\c@part=\count177
-\c@section=\count178
-\c@subsection=\count179
-\c@subsubsection=\count180
-\c@paragraph=\count181
-\c@subparagraph=\count182
-\c@figure=\count183
-\c@table=\count184
+\c@part=\count179
+\c@section=\count180
+\c@subsection=\count181
+\c@subsubsection=\count182
+\c@paragraph=\count183
+\c@subparagraph=\count184
+\c@figure=\count185
+\c@table=\count186
 \abovecaptionskip=\skip47
 \belowcaptionskip=\skip48
 \bibindent=\dimen138
 )
-(/usr/share/texmf-dist/tex/latex/tools/multicol.sty
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/latex-tools\multicol.sty
 Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
-\c@tracingmulticols=\count185
+\c@tracingmulticols=\count187
 \mult@box=\box47
 \multicol@leftmargin=\dimen139
-\c@unbalance=\count186
-\c@collectmore=\count187
-\doublecol@number=\count188
-\multicoltolerance=\count189
-\multicolpretolerance=\count190
+\c@unbalance=\count188
+\c@collectmore=\count189
+\doublecol@number=\count190
+\multicoltolerance=\count191
+\multicolpretolerance=\count192
 \full@width=\dimen140
 \page@free=\dimen141
 \premulticols=\dimen142
@@ -85,20 +83,19 @@ Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
 \@tempa=\box88
 \@tempa=\box89
 \@tempa=\box90
-\c@minrows=\count191
-\c@columnbadness=\count192
-\c@finalcolumnbadness=\count193
+\c@minrows=\count193
+\c@columnbadness=\count194
+\c@finalcolumnbadness=\count195
 \last@try=\dimen145
 \multicolovershoot=\dimen146
 \multicolundershoot=\dimen147
 \mult@nat@firstbox=\box91
 \colbreak@box=\box92
-\mc@col@check@num=\count194
-)
-(/usr/share/texmf-dist/tex/latex/oberdiek/aliascnt.sty
+\mc@col@check@num=\count196
+) (C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/oberdiek\aliascnt.sty
 Package: aliascnt 2018/09/07 v1.5 Alias counters (HO)
 )
-\c@chapter=\count195
+\c@chapter=\count197
 LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 362.
 LaTeX Font Info:    Redeclaring math symbol \Delta on input line 363.
 LaTeX Font Info:    Redeclaring math symbol \Theta on input line 364.
@@ -120,11 +117,11 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
 \tocparanum=\dimen155
 \tocparatotal=\dimen156
 \tocsubparanum=\dimen157
-\@tempcntc=\count196
+\@tempcntc=\count198
 \fnindent=\dimen158
-\c@@inst=\count197
-\c@@auth=\count198
-\c@auco=\count199
+\c@@inst=\count199
+\c@@auth=\count266
+\c@auco=\count267
 \instindent=\dimen159
 \authrun=\box93
 \authorrunning=\toks15
@@ -132,52 +129,55 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 372.
 \titrun=\box94
 \titlerunning=\toks17
 \toctitle=\toks18
-\c@theorem=\count266
-\c@case=\count267
-\c@conjecture=\count268
-\c@corollary=\count269
-\c@definition=\count270
-\c@example=\count271
-\c@exercise=\count272
-\c@lemma=\count273
-\c@note=\count274
-\c@problem=\count275
-\c@property=\count276
-\c@proposition=\count277
-\c@question=\count278
-\c@solution=\count279
-\c@remark=\count280
+\c@theorem=\count268
+\c@case=\count269
+\c@conjecture=\count270
+\c@corollary=\count271
+\c@definition=\count272
+\c@example=\count273
+\c@exercise=\count274
+\c@lemma=\count275
+\c@note=\count276
+\c@problem=\count277
+\c@property=\count278
+\c@proposition=\count279
+\c@question=\count280
+\c@solution=\count281
+\c@remark=\count282
 \headlineindent=\dimen160
-)
-(/usr/share/texmf-dist/tex/latex/graphics/graphicx.sty
+) (C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphicx.sty
 Package: graphicx 2020/09/09 v1.2b Enhanced LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texmf-dist/tex/latex/graphics/keyval.sty
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty
 Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
 \KV@toks@=\toks19
 )
-(/usr/share/texmf-dist/tex/latex/graphics/graphics.sty
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/graphics\graphics.sty
 Package: graphics 2020/08/30 v1.4c Standard LaTeX Graphics (DPC,SPQR)
 
-(/usr/share/texmf-dist/tex/latex/graphics/trig.sty
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/graphics\trig.sty
 Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
 )
-(/usr/share/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\graphics.cf
+g
 File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: pdftex.def on input line 105.
 
-(/usr/share/texmf-dist/tex/latex/graphics-def/pdftex.def
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.def
 File: pdftex.def 2020/10/05 v1.2a Graphics/color driver for pdftex
 ))
 \Gin@req@height=\dimen161
 \Gin@req@width=\dimen162
 )
-(/usr/share/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
-File: l3backend-pdftex.def 2020-09-24 L3 backend support: PDF output (pdfTeX)
-\l__kernel_color_stack_int=\count281
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pdft
+ex.def
+File: l3backend-pdftex.def 2021-02-18 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count283
 \l__pdf_internal_box=\box95
-) (./report.aux)
+) (report.aux)
+\openout1 = `report.aux'.
+
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
@@ -192,28 +192,28 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
 LaTeX Font Info:    ... okay on input line 9.
-(/usr/share/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.mki
+i
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count282
+\scratchcounter=\count284
 \scratchdimen=\dimen163
 \scratchbox=\box96
-\nofMPsegments=\count283
-\nofMParguments=\count284
+\nofMPsegments=\count285
+\nofMParguments=\count286
 \everyMPshowfont=\toks20
-\MPscratchCnt=\count285
+\MPscratchCnt=\count287
 \MPscratchDim=\dimen164
-\MPnumerator=\count286
-\makeMPintoPDFobject=\count287
+\MPnumerator=\count288
+\makeMPintoPDFobject=\count289
 \everyMPtoPDFconversion=\toks21
-) (/usr/share/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+)
+(C:\Users\User\AppData\Local\Programs\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-ba
+se.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 85.
-
-(/usr/share/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
-e
-))
+)
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 20.
 LaTeX Font Info:    External font `cmex10' loaded for size
@@ -260,28 +260,29 @@ LaTeX Warning: Citation `ref_url1' on page 1 undefined on input line 67.
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}] [2 <./fig1.PNG>]
+{C:/Users/User/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] [2 <./fig1.png>]
+
 No file report.bbl.
-[3] (./report.aux) ) 
+[3] (report.aux) ) 
 Here is how much of TeX's memory you used:
- 1635 strings out of 479383
- 22881 string characters out of 5875830
- 307092 words of memory out of 5000000
- 18771 multiletter control sequences out of 15000+600000
- 407583 words of font info for 41 fonts, out of 8000000 for 9000
+ 1636 strings out of 479334
+ 23599 string characters out of 2857560
+ 322110 words of memory out of 3000000
+ 19116 multiletter control sequences out of 15000+200000
+ 407583 words of font info for 41 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 66i,7n,72p,306b,223s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts
-1.enc}</usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/sh
-are/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmbx9.pfb></usr/share/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr9.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></us
-r/share/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb>
-Output written on report.pdf (3 pages, 149466 bytes).
+ 68i,7n,74p,308b,223s stack positions out of 5000i,500n,10000p,200000b,50000s
+ <C:\Users\User\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen
+/ec/dpi600\tcrm0900.pk><C:/Users/User/AppData/Local/Programs/MiKTeX/fonts/type1
+/public/amsfonts/cm/cmbx10.pfb><C:/Users/User/AppData/Local/Programs/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/User/AppData/Local/Programs/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmbx9.pfb><C:/Users/User/AppData/Local/Prog
+rams/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/User/AppData/Loc
+al/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/User/AppDa
+ta/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmtt9.pfb>
+Output written on report.pdf (3 pages, 153054 bytes).
 PDF statistics:
- 46 PDF objects out of 1000 (max. 8388607)
- 31 compressed objects within 1 object stream
+ 44 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  6 words of extra memory for PDF output out of 10000 (max. 10000000)
 
