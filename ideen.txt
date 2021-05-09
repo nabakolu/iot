@@ -21,3 +21,20 @@ Echte Sensoren:
 Mock Sensoren:
 	Weather API, CO2
 ..
+
+
+Requirements:
+
+	Must have:
+		manual control of windows, blinds and heating
+		user can specify automatisation parameters
+		maintain CO2 level
+		desired room tempreature
+		prevent distracting/annoying sun beams
+		
+	nice to have:
+		overview of system data and commu ications between components
+		prevent wind in office
+		prevent outside noise
+		prevent raining through open windows
+		use weather forecast to determine strategy
