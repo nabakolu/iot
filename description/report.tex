@@ -5,6 +5,7 @@
 \documentclass[runningheads]{llncs}
 %
 \usepackage{graphicx}
+\usepackage{hyperref}
 
 \begin{document}
 %
@@ -32,8 +33,6 @@ The abstract should briefly summarize the contents of the report in
 %
 \section{System Introduction}
 
-\section{System Introduction}
-
 Quality of Life and well-being is an essential factor for work performance and employees in modern office environments~\cite{employee_wellbeingimportant}. One prominent problem regarding indoor office buildings is a high CO$_2$ concentration which can lead to impaired work performance and negative health symptoms~\cite{indoor_polutionCO2}. Further possible disturbances in office environments include ambient noise and sunlight~\cite{indoor_noiselight}. Both elements distract the concentration of office workers. 
 \newline
 We use an intelligent windows and blinds management system to address the problems outlined above.
@@ -54,69 +53,82 @@ The goal is to control the office's windows and shutters to maintain high air qu
     \item [R3.] User can specify automation parameters
     \item [R4.] Sustaining desired room temperature using energy efficient decisions
     \item [R5.] Great amounts of sunlight are blocked by blinds
+    \item [R6.] Prevent rain through open windows
 \end{itemize}
 \item{\textbf{Nice to have requirements}}\
 \begin{itemize}
-    \item [R6.] System status overview 
-    \item [R7.] Prevent strong wind from coming through windows 
-    \item [R8.] Prevent distracting amounts of noise levels
-    \item [R9.] Prevent rain through open windows
+    \item [R7.] System status overview 
+    \item [R8.] Prevent strong wind from coming through windows 
+    \item [R9.] Prevent distracting amounts of ambient noise
     \item [R10.] Plan ahead by using a weather forecast 
 \end{itemize}
 \end{description}
-
-\subsection{Maintaining a low CO$_2$ concentration}
+\subsection{Must have requirements}
+\subsubsection{R1. Maintaining a low CO$_2$ concentration}
 
 Ensuring the well-being of employees by avoiding high levels of CO$_2$ is one of the essential problems the window management system is supposed to address. Therefore, it is a core requirement that the system is able to maintain low CO$_2$ levels inside the office space.
 
-\subsection{User has manual control of windows, blinds, and heating}
+\subsubsection{User has manual control of windows, blinds, and heating}
 \begin{itemize}
     \item [U1:] \label{r2u1} \textit{As a project lead, I need a dark room so that my Power Point presentations are clearly visible.}
     \item [U2:] \label{r2u2} \textit{As a safety manager, I need to open the windows in case of an emergency.}
 \end{itemize}
 While the system aims at automating all window, blinds, and heating functionality optimally, there do exist scenarios, where the manual operation of these devices is desired. Detection and response to all scenarios is not possible due to the limited scope of the system. The user stories~\hyperref[r2u1]{U1} and~\hyperref[r2u1]{U2} detail such scenarios where manual control is needed. 
 
-\subsection{User can specify automation parameters}
+\subsubsection{User can specify automation parameters}
 Different office environments have different demands regarding acceptable CO$_2$, ambient noise levels, etc. These demands can only be satisfied, by adjusting the automation accordingly.
 
-\subsection{Sustaining desired room temperature using efficient decisions}
+\subsubsection{Sustaining desired room temperature using efficient decisions}
 \begin{itemize}
     \item [U1:] \label{r4u1} \textit{As a CEO, I want the system to operate energy efficient, so that I can minimize my heating costs.}
 \end{itemize}
 Sustaining a desired temperature contributes to the well-being of employees in the office space. Additionally user story~\hyperref[r4u1]{U1} demonstrates the need to take energy efficiency into account during the systems operation.
 Therefore coordination between windows and heating is necessary.
 
-\subsection{Great amounts of sunlight are blocked by blinds}
+\subsubsection{Great amounts of sunlight are blocked by blinds}
 \begin{itemize}
     \item [U1:] \label{r5u1} \textit{As an employee, I want shades to be in a position so that i am not blinded by sunlight.}
 \end{itemize}
 Blinding sunlight can be a distraction to workers in the office space~\cite{indoor_noiselight} the argument to block excessive amounts of sunlight is further reinforced by user story~\hyperref[r5u1]{U1}. The effect of sunlight can prevented by the use of blinds. Considering the fact, that blinds are a part of the systems automation objective it is therefore necessary, that the system automatically blocks excessive sunlight.
 
+\subsubsection{Prevent rain through open windows}
+Open windows inherently create the risk of rain coming into the office and damaging the interior. In order to prevent damage to the office interior the system has to detect rain and prevent it from entering the building.
 
-\subsection{System status overview}
+\subsection{Nice to have requirements}
+\subsubsection{System status overview}
 \begin{itemize}
     \item [U1:] \label{r6u1} \textit{As a facility manager, I want to be able to view the status of different system components, so that I don't have to control them manually.}
     \item [U2:] \label{r6u2} \textit{As a security officer, I want to be able to the view current state of the windows, so that I can make sure that nobody can get in.}
 \end{itemize}
 Both the security officer~\hyperref[r6u1]{(U1)} and the facility manager~\hyperref[r6u1]{(U2)} have an interest in a system overview functionality, as it would make their respective work easier. But they are both also able to perform their job without this functionality. It is therefore nice to fulfill this requirement but not requisite to the systems functionality.
 
-\subsection{Prevent strong wind from coming through windows}
+\subsubsection{Prevent strong wind from coming through windows}
 While strong wind can be nuisance it has no negative effect on the office workers health and is easier to notice than CO$_2$. It would therefore be nice to avoid strong wind but is not necessary for the success of the system. 
 
-\subsection{Prevent distracting amounts of noise levels}
-why not mandatory kann ich nicht begründen
+\subsubsection{Prevent distracting amounts of ambient noise}
+Ambient noise can be very distracting closing the windows during peak ambient noise levels can reduce outside noise significantly. Ambient noise depends on the office location and is generally less essential to the system's operation.
 
-\subsection{Prevent rain through open windows}
-why not mandatory kann ich nicht begründen
-
-\subsection{Plan ahead by using a weather forecast}
+\subsubsection{Plan ahead by using a weather forecast}
 Being able to plan around bad weather situations would enhance the systems ability to satisfy set goals. At time this requirement is not needed for the systems base functionality. It is therefore not mandatory.   
 
 
 \newpage
 
-\section{System analysis}
-Other weather aspects such, as wind and rain also need to be considered when controlling office windows. Additional, the influence of ambient noise has to be minimized. 
+
+\begin{itemize}
+    \item [U1:] \textit{As a project lead, I need a dark room so that my Power Point presentations are clearly visible.}
+    \item [U2:]\label{test} \textit{As a project lead, I need a dark room so that my Power Point presentations are clearly visible.}
+\end{itemize}
+
+\section{System Architecture Design}
+
+
+
+
+
+
+
+
 
 
 
@@ -154,6 +166,12 @@ I5 & D5 \\
 
 Fig.~\ref{fig1} gives an example of a figure.
 
+\begin{figure}
+\includegraphics[width=\textwidth]{fig1}
+\caption{A figure caption is always placed below the illustration.
+Please note that short captions are centered, while long ones are
+justified by the macro package automatically.} \label{fig1}
+\end{figure}
 
 For citations of references, we prefer the use of square brackets
 and consecutive numbers. The following bibliography provides
