@@ -16,18 +16,13 @@ Lukas Nabakowski \and
 Jannis Rapp}
 
 \institute{Service Computing Department, IAAS, University of Stuttgart
-\email{st150016@stud.uni-stuttgart.de} \and
-\email{st148841@stud.uni-stuttgart.de} \and
+\email{st150016@stud.uni-stuttgart.de}  \newline
+\email{st148841@stud.uni-stuttgart.de}  \newline
 \email{st150565@stud.uni-stuttgart.de}}
 %
 \maketitle              % typeset the header of the contribution
 %
-\begin{abstract}
-The abstract should briefly summarize the contents of the report in
-150--250 words. 
 
-\keywords{First keyword  \and Second keyword \and Another keyword.}
-\end{abstract}
 %
 %
 %
@@ -35,7 +30,7 @@ The abstract should briefly summarize the contents of the report in
 
 Quality of Life and well-being is an essential factor for work performance and employees in modern office environments~\cite{employee_wellbeingimportant}. One prominent problem regarding indoor office buildings is a high CO$_2$ concentration which can lead to impaired work performance and negative health symptoms~\cite{indoor_polutionCO2}. Further possible disturbances in office environments include ambient noise and sunlight~\cite{indoor_noiselight}. Both elements distract the concentration of office workers. 
 \newline
-We use an intelligent windows and blinds management system to address the problems outlined above.
+We use an intelligent windows and blinds and heating management system to address the problems outlined above.
 This system uses sensors to monitor the CO$_2$ concentration, ambient noise level, and sunlight intensity.
 Based on the observed information, the system can then react by adjusting the windows, shutters, and heating accordingly.
 \newline
@@ -43,7 +38,7 @@ The goal is to control the office's windows and shutters to maintain high air qu
 
 
 
-\section{System Analysis}
+\subsection{System Analysis}
 
 \begin{description}
 \item{\textbf{Must have requirements}}\
@@ -64,134 +59,69 @@ The goal is to control the office's windows and shutters to maintain high air qu
 \end{itemize}
 \end{description}
 \subsection{Must have requirements}
-\subsubsection{R1. Maintaining a low CO$_2$ concentration}
+\subsubsection{R1. Maintaining a low CO$_2$ concentration}\label{r1}
 
 Ensuring the well-being of employees by avoiding high levels of CO$_2$ is one of the essential problems the window management system is supposed to address. Therefore, it is a core requirement that the system is able to maintain low CO$_2$ levels inside the office space.
 
-\subsubsection{User has manual control of windows, blinds, and heating}
+\subsubsection{R2. User has manual control of windows, blinds, and heating}\label{r2}
 \begin{itemize}
     \item [U1:] \label{r2u1} \textit{As a project lead, I need a dark room so that my Power Point presentations are clearly visible.}
     \item [U2:] \label{r2u2} \textit{As a safety manager, I need to open the windows in case of an emergency.}
 \end{itemize}
-While the system aims at automating all window, blinds, and heating functionality optimally, there do exist scenarios, where the manual operation of these devices is desired. Detection and response to all scenarios is not possible due to the limited scope of the system. The user stories~\hyperref[r2u1]{U1} and~\hyperref[r2u1]{U2} detail such scenarios where manual control is needed. 
+While the system aims at automating all windows, blinds, and heating functionality optimally, there do exist scenarios, where the manual operation of these devices is desired. Detection and response to all scenarios is not possible due to the limited scope of the system. The user stories~\hyperref[r2u1]{U1} and~\hyperref[r2u1]{U2} detail such scenarios where manual control is needed. 
 
-\subsubsection{User can specify automation parameters}
+\subsubsection{R3. User can specify automation parameters}\label{r3}
 Different office environments have different demands regarding acceptable CO$_2$, ambient noise levels, etc. These demands can only be satisfied, by adjusting the automation accordingly.
 
-\subsubsection{Sustaining desired room temperature using efficient decisions}
+\subsubsection{R4. Sustaining desired room temperature using efficient decisions}\label{r4}
 \begin{itemize}
-    \item [U1:] \label{r4u1} \textit{As a CEO, I want the system to operate energy efficient, so that I can minimize my heating costs.}
+    \item [U3:] \label{r4u1} \textit{As a CEO, I want the system to operate energy efficient, so that I can minimize my heating costs.}
 \end{itemize}
-Sustaining a desired temperature contributes to the well-being of employees in the office space. Additionally user story~\hyperref[r4u1]{U1} demonstrates the need to take energy efficiency into account during the systems operation.
+Sustaining a desired temperature contributes to the well-being of employees in the office space. Additionally user story~\hyperref[r4u1]{U3} demonstrates the need to take energy efficiency into account during the systems operation.
 Therefore coordination between windows and heating is necessary.
 
-\subsubsection{Great amounts of sunlight are blocked by blinds}
+\subsubsection{R5. Great amounts of sunlight are blocked by blinds}\label{r5}
 \begin{itemize}
-    \item [U1:] \label{r5u1} \textit{As an employee, I want shades to be in a position so that i am not blinded by sunlight.}
+    \item [U4:] \label{r5u1} \textit{As an employee, I want shades to be in a position so that i am not blinded by sunlight.}
 \end{itemize}
-Blinding sunlight can be a distraction to workers in the office space~\cite{indoor_noiselight} the argument to block excessive amounts of sunlight is further reinforced by user story~\hyperref[r5u1]{U1}. The effect of sunlight can prevented by the use of blinds. Considering the fact, that blinds are a part of the systems automation objective it is therefore necessary, that the system automatically blocks excessive sunlight.
+Blinding sunlight can be a distraction to workers in the office space~\cite{indoor_noiselight}. The argument to block excessive amounts of sunlight is further reinforced by user story~\hyperref[r5u1]{U4}. The effect of sunlight can be prevented by using blinds. Considering the fact, that blinds are a part of the systems automation objective it is therefore necessary, that the system automatically blocks excessive sunlight.
 
-\subsubsection{Prevent rain through open windows}
+\subsubsection{R6. Prevent rain through open windows}\label{r6}
 Open windows inherently create the risk of rain coming into the office and damaging the interior. In order to prevent damage to the office interior the system has to detect rain and prevent it from entering the building.
 
 \subsection{Nice to have requirements}
-\subsubsection{System status overview}
+\subsubsection{R7. System status overview}\label{r7}
 \begin{itemize}
-    \item [U1:] \label{r6u1} \textit{As a facility manager, I want to be able to view the status of different system components, so that I don't have to control them manually.}
-    \item [U2:] \label{r6u2} \textit{As a security officer, I want to be able to the view current state of the windows, so that I can make sure that nobody can get in.}
+    \item [U5:] \label{r6u1} \textit{As a facility manager, I want to be able to view the status of different system components, so that I don't need to watch them manually.}
 \end{itemize}
-Both the security officer~\hyperref[r6u1]{(U1)} and the facility manager~\hyperref[r6u1]{(U2)} have an interest in a system overview functionality, as it would make their respective work easier. But they are both also able to perform their job without this functionality. It is therefore nice to fulfill this requirement but not requisite to the systems functionality.
+Both the security officer~\hyperref[r6u1]{(U5)} and the facility manager~\hyperref[r6u1]{(U6)} have an interest in a system overview functionality, as it would make their respective work easier. But both of them are also able to perform their job without this functionality. It is therefore nice to fulfill this requirement but not requisite to the systems functionality.
 
-\subsubsection{Prevent strong wind from coming through windows}
-While strong wind can be nuisance it has no negative effect on the office workers health and is easier to notice than CO$_2$. It would therefore be nice to avoid strong wind but is not necessary for the success of the system. 
+\subsubsection{R8. Prevent strong wind from coming through windows}\label{r8}
+Although strong wind coming through windows can be a  nuisance it is also a comparably infrequent and harmless problem which can be solved by manual user control. It therefore falls into the category 'Nice to have requirements'.
 
-\subsubsection{Prevent distracting amounts of ambient noise}
-Ambient noise can be very distracting closing the windows during peak ambient noise levels can reduce outside noise significantly. Ambient noise depends on the office location and is generally less essential to the system's operation.
+\subsubsection{R9. Prevent distracting amounts of ambient noise}\label{r9}
+Ambient noise can be very distracting. Closing the windows during peak ambient noise levels can reduce outside noise significantly. Ambient noise depends on the office location and is generally less essential to the system's operation.
 
-\subsubsection{Plan ahead by using a weather forecast}
-Being able to plan around bad weather situations would enhance the systems ability to satisfy set goals. At time this requirement is not needed for the systems base functionality. It is therefore not mandatory.   
-
+\subsubsection{R10. Plan ahead by using a weather forecast}\label{r10}
+Being able to plan around bad weather situations would enhance the system's ability to satisfy set goals. This requirement is not needed for the systems base functionality it is therefore optional.   
 
 \newpage
-
-
-\begin{itemize}
-    \item [U1:] \textit{As a project lead, I need a dark room so that my Power Point presentations are clearly visible.}
-    \item [U2:]\label{test} \textit{As a project lead, I need a dark room so that my Power Point presentations are clearly visible.}
-\end{itemize}
-
 \section{System Architecture Design}
-
-
-
-
-
-
-
-
-
-
-
-
-The performance and health of office employees can be increased my monitoring the CO2 concentration, aswell   
-
-To increase the performance and health of employees an automated  
-
-
-
-Modern companies are focus
-
-
-
-
-Describe the scope (ghdfghfdhgbackground information and problem statement) and the goals of your project.
-
-Table~\ref{tab1} an example of a table.
-
-\begin{table}
-\caption{Table captions should be placed above the
-tables.}\label{tab1}
-\begin{tabular}{|l|l|}
-\hline
-Item & Deadline \\
-\hline
-I111 & D1 \\
-I2 & D2 \\
-I3 & D3 \\
-I4 & D4 \\
-I5 & D5 \\
-\hline
-\end{tabular}
-\end{table}
-
-Fig.~\ref{fig1} gives an example of a figure.
+The architecture used to face these requirements is described in~\autoref{fig:architektur}.
+It is partitioned into four layers: the user layer, the reasoning layer, the ubiquitous layer, and the physical layer.
+The user layer consists solely of the user interface, which contains a manual override for windows, blinds and heating~\hyperref[r2]{(R2)}, a status overview of the system~\hyperref[r7]{(R7)} and an automation configuration functionality~\hyperref[r3]{(R3)}.
+The reasoning layer contains the decision making component, which calculates an optimal automation policy given the user goals.
+The knowledge base, plan execution component and weather forecast~\hyperref[r10]{(R10)} are part of the ubiquitous layer.
+The knowledge base contains sensor and actuator device descriptions, raw data, and the current system configuration. The weather forecast is stored in the knowledge base. The plan execution component reads current sensor data and enforces the current automation policy by sending commands to the actuators.
+Sensors and actuators are part of the physical layer. Both send their device descriptions to the knowledge base. Additionally, sensors send their sensor data and actuators execute the commands sent from the plan execution component and the manual user override.
 
 \begin{figure}
-\includegraphics[width=\textwidth]{fig1}
-\caption{A figure caption is always placed below the illustration.
-Please note that short captions are centered, while long ones are
-justified by the macro package automatically.} \label{fig1}
+    \centering              
+    \includegraphics[width=\textwidth]{archiv1.pdf}
+    \caption[System Architecture]{System Architecture}
+    \label{fig:architektur}         
 \end{figure}
 
-For citations of references, we prefer the use of square brackets
-and consecutive numbers. The following bibliography provides
-a sample reference list with entries for journal
-articles~\cite{ref_article1}, a book~\cite{ref_book1}, proceedings without editors~\cite{ref_proc1},
-and a homepage~\cite{ref_url1}. Multiple citations are grouped
-\cite{ref_article1,ref_book1},
-\cite{ref_article1,ref_book1,ref_proc1,ref_url1}.
-
-\section{System Analysis}
-Describe the user requirements of your system.
-
-\section{System Architecture Design}
-Describe and provide a design of the architecture of your system.
-
-\section{System Implementation}
-Describe the implementation of your system. This section is only relevant for the report and should be omitted for the project description. 
-
-\section{Discussion and Conclusions}
-Here you can discuss some interesting points or limitations of your system and conclude the report.
 
 %
 % ---- Bibliography ----
