@@ -38,3 +38,11 @@ Requirements:
 		prevent outside noise
 		prevent raining through open windows
 		use weather forecast to determine strategy
+
+Sensoren die wir brachen/Sachen die wir haben wollen:
+	-3 Fenster --> 6 Servos
+	-Photowiederstände 2 aber gibts meist eh nur als bundle für 2€ oder so
+	-(wind) -> potentiometer
+	-potentiometer --> großpack
+	-regensensor --> 2 Stück
+	-esp8266 3er pack < 14
