@@ -19,35 +19,17 @@
         <mat-toolbar-row><h2 class="sidenav-toolbar">Menu</h2></mat-toolbar-row>
       </mat-toolbar>
       
-      <mat-nav-list class="">
-        <mat-list-item routerLink="/dashboard"> 
-          <a class="sidebar-nav-item-container fancy-text-color">
-            <mat-icon class="sidebar-nav-item-icon">dashboard</mat-icon>
-            <p>Dashboard</p>
-          </a>
-        </mat-list-item>
-        <mat-list-item> 
-          <a class="sidebar-nav-item-container fancy-text-color">
-            <mat-icon class="sidebar-nav-item-icon">sensors</mat-icon>
-            <p>Sensors</p>
-          </a>
-        </mat-list-item>
-        <mat-list-item routerLink="/sensors"> 
-          <a class="sidebar-nav-item-container fancy-text-color" routerLink="/dashboard">
-            <mat-icon class="sidebar-nav-item-icon fan">developer_board</mat-icon>
-            <p>Actuators</p>
-          </a>
-        </mat-list-item>
-        <mat-list-item routerLink="/dashboard"> 
-          <a class="sidebar-nav-item-container fancy-text-color">
-            <mat-icon class="sidebar-nav-item-icon fan">settings</mat-icon>
-            <p>Customize</p>
-          </a>
-        </mat-list-item>
-        <mat-list-item routerLink="/dashboard"> 
-          <a class="sidebar-nav-item-container fancy-text-color">
-            <mat-icon class="sidebar-nav-item-icon fan">code</mat-icon>
-            <p>Console</p>
+      <mat-nav-list class="list-modules">
+        <mat-list-item *ngFor="let nav_sidebar_item of sidebarNavItems; let i = index" 
+          routerLink="{{nav_sidebar_item.routerLink}}"
+          (click)='selectedItemIndex = i;'
+          [ngClass]="{'active-sidebar-nav-item': selectedItemIndex === i, 'mat-elevation-z8': selectedItemIndex === i}"
+          > 
+          <a class="sidebar-nav-item-container"
+            [ngClass]="{'fancy-text-color': selectedItemIndex !== i}"
+          >
+            <mat-icon class="sidebar-nav-item-icon">{{nav_sidebar_item.material}}</mat-icon>
+            <p>{{nav_sidebar_item.name}}</p>
           </a>
         </mat-list-item>
       </mat-nav-list>

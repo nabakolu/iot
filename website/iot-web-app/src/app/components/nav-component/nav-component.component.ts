@@ -11,6 +11,35 @@ import { map, shareReplay } from 'rxjs/operators';
 export class NavComponentComponent {
 
   backgroundImage = "src\assets\images\sidebar-background/cracks.jpg"
+  selectedItemIndex: number;
+
+  sidebarNavItems = [
+    {
+      name: "Dashboard",
+      material: "dashboard",
+      routerLink: "/dashboard"
+    },
+    {
+      name: "Sensors",
+      material: "developer_board",
+      routerLink: "/sensors"
+    },
+    {
+      name: "Actuators",
+      material: "sensors",
+      routerLink: "/sensors"
+    },
+    {
+      name: "Customize",
+      material: "settings",
+      routerLink: "/sensors"
+    },
+    {
+      name: "Console",
+      material: "code",
+      routerLink: "/dashboard"
+    }
+  ]
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -18,6 +47,7 @@ export class NavComponentComponent {
       shareReplay()
     );
 
-  constructor(private breakpointObserver: BreakpointObserver) {}
-
+  constructor(private breakpointObserver: BreakpointObserver) {
+    this.selectedItemIndex = 0;
+  }
 }

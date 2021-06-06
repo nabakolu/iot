@@ -35,11 +35,14 @@ def test_disconnect():
 def handle_my_custom_event(string):
     print(string)
 
+randomVar = 50
 def mockedData():
+    global randomVar
     while True:
-        print("in here")
-        socketio.emit("exDataValue", random.random()*10)
-        time.sleep(5)
+        if random.random() > 0.5: randomVar += random.random()
+        else: randomVar -= random.random()
+        socketio.emit("exDataValue", randomVar)
+        time.sleep(10)
 
 if __name__ == '__main__':
     socketio.run(app)
