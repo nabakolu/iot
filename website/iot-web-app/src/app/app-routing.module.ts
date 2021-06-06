@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {IotDashboardComponent} from './iot-dashboard/iot-dashboard.component';
-import {SensorListComponentComponent} from './sensor-list-component/sensor-list-component.component';
+import {IotDashboardComponent} from './components/iot-dashboard/iot-dashboard.component';
+import {SensorListComponentComponent} from './components/sensor-list-component/sensor-list-component.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: IotDashboardComponent },

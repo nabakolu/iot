@@ -11,15 +11,17 @@ import {MatListModule} from '@angular/material/list';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { NavComponentComponent } from './nav-component/nav-component.component';
-import { IotDashboardComponent } from './iot-dashboard/iot-dashboard.component';
+import { NavComponentComponent } from './components/nav-component/nav-component.component';
+import { IotDashboardComponent } from './components/iot-dashboard/iot-dashboard.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
-import { SensorListComponentComponent } from './sensor-list-component/sensor-list-component.component';
+import { SensorListComponentComponent } from './components/sensor-list-component/sensor-list-component.component';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { FormsModule } from '@angular/forms';
+import { DataService } from './services/data.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,7 @@ import { MatSortModule } from '@angular/material/sort';
     MatSortModule
     
   ],
-  providers: [],
+  providers: [DataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
