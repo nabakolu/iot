@@ -22,6 +22,10 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { FormsModule } from '@angular/forms';
 import { DataService } from './services/data.service';
+import { ConsoleComponent } from './components/console/console.component';
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { NgScrollbarModule } from 'ngx-scrollbar';
 
 @NgModule({
   declarations: [
@@ -29,6 +33,7 @@ import { DataService } from './services/data.service';
     NavComponentComponent,
     IotDashboardComponent,
     SensorListComponentComponent,
+    ConsoleComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,8 +50,11 @@ import { DataService } from './services/data.service';
     MatMenuModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
-    
+    MatSortModule,
+    TextFieldModule,
+    FormsModule,
+    ScrollingModule,
+    NgScrollbarModule
   ],
   providers: [DataService],
   bootstrap: [AppComponent]

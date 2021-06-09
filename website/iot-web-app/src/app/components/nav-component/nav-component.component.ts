@@ -37,7 +37,7 @@ export class NavComponentComponent {
     {
       name: "Console",
       material: "code",
-      routerLink: "/dashboard"
+      routerLink: "/console"
     }
   ]
 
