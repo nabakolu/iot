@@ -12,7 +12,7 @@
                 </div>
                 <div class="console-input-div">
                         <span class="console-input-indicator">></span>
-                        <textarea #areaElem [(ngModel)]="consoleInput" (keydown.enter)="submitConsoleInput()" cdkTextareaAutosize  class="console-input-textarea" cdkAutosizeMinRows="1"> </textarea>
+                        <textarea #areaElem [(ngModel)]="consoleInput" (keydown.arrowup)="consoleArrowNavigation('up')" (keydown.arrowdown)="consoleArrowNavigation('down')" (keydown.enter)="submitConsoleInput()" cdkTextareaAutosize  class="console-input-textarea" cdkAutosizeMinRows="1"> </textarea>
                 </div>
             </div>
             </ng-scrollbar>

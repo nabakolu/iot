@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { DataService } from 'src/app/services/data.service';
 import {ConsoleItem} from './console-item';
 
 @Component({
@@ -12,8 +13,10 @@ export class ConsoleComponent implements OnInit {
   //two way bound to input textarea
   consoleInput: string = "";
   consoleContent: Array<ConsoleItem> = [];
+  commandMemory: Array<string> = [""];
+  indexInMemory: number = 0;
 
-  constructor() { }
+  constructor(private dataServiceInstance: DataService) { }
 
   ngOnInit(): void {
 
@@ -23,13 +26,51 @@ export class ConsoleComponent implements OnInit {
 
   submitConsoleInput(){
     let areaElem =  this.areaElem.nativeElement; 
+    this.commandMemory.splice(1, 0, this.consoleInput)
+    this.indexInMemory = 0;
+    this.commandMemory[0] = "";
     this.handleConsoleInput(this.consoleInput)
     //reset textfield by manipulating value property 
     //!!!using two way binding to reset doesn't trigger the resize function correctly --> hack with timeout
     setTimeout(function(){
       areaElem.value="";
     },0);
+    this.consoleInput = "";
   }
+
+  consoleArrowNavigation(direction: string){
+    let comp = this;
+    console.warn("im working:", direction, ":::", this.indexInMemory)
+    console.warn(this.commandMemory)
+    if (direction === "up"){
+      if (this.commandMemory.length > this.indexInMemory+1){
+        this.commandMemory[this.indexInMemory] = this.consoleInput == "\n"? "": this.consoleInput;
+        this.indexInMemory++;
+        this.consoleInput = "";
+        setTimeout(function(){
+          comp.areaElem.nativeElement.value="";
+        },0);
+        this.consoleInput = comp.commandMemory[comp.indexInMemory];
+        setTimeout(function(){
+          comp.areaElem.nativeElement.value=comp.commandMemory[comp.indexInMemory];
+        },0);
+      }
+    }
+    else if (this.indexInMemory>0){
+      this.commandMemory[this.indexInMemory] = this.consoleInput == "\n"? "": this.consoleInput;
+      this.indexInMemory--;
+      this.consoleInput = "";
+      setTimeout(function(){
+        comp.areaElem.nativeElement.value="";
+      },0);
+      this.consoleInput = comp.commandMemory[comp.indexInMemory];
+      setTimeout(function(){
+        comp.areaElem.nativeElement.value=comp.commandMemory[comp.indexInMemory];
+      },0);
+    }
+  }
+
+
 
   handleConsoleInput(input: string){
     console.log(input)
@@ -54,7 +95,11 @@ Available commands are:
   -mqtt -[topic] -[message]`
     }
     else if (command.toLowerCase().startsWith("mqtt")){
-      return "This command will be available soon"
+      let cmdParts: Array<string> = command.split("--")
+      let topic: string = cmdParts[1]
+      let message: string = cmdParts[2]
+      this.dataServiceInstance.publishMQTT(topic, message, false);
+      return "Send MQTT message to topic: " + topic
     }
     else{
       return "Unrecognized command type 'help' to get an overview of available commands"

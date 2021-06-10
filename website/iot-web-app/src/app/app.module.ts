@@ -26,6 +26,19 @@ import { ConsoleComponent } from './components/console/console.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NgScrollbarModule } from 'ngx-scrollbar';
+import {
+  IMqttMessage,
+  MqttModule,
+  IMqttServiceOptions
+} from 'ngx-mqtt';
+
+export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
+  hostname: '82.165.70.137',
+  port: 4005,
+  path: '/mqtt',
+  username: 'iotproject', 
+  password: 'iotaccesspw%'
+};
 
 @NgModule({
   declarations: [
@@ -54,7 +67,8 @@ import { NgScrollbarModule } from 'ngx-scrollbar';
     TextFieldModule,
     FormsModule,
     ScrollingModule,
-    NgScrollbarModule
+    NgScrollbarModule,
+    MqttModule.forRoot(MQTT_SERVICE_OPTIONS)
   ],
   providers: [DataService],
   bootstrap: [AppComponent]
