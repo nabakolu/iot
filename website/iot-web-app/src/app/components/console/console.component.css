@@ -143,3 +143,7 @@
     border-right: 20px solid transparent;
     border-left: 20px solid transparent;
 }
+
+.mat-h1 {
+    padding-bottom: 16px;
+}

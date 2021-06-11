@@ -1,0 +1,86 @@
+<div class="grid-container">
+    <h1 class="mat-h1">Customize Automation Policy</h1>
+    <div class="customize-component-container">
+        <div class="temperature-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon aria-hidden="false" aria-label="Example home icon">thermostat</mat-icon>
+                    </div>
+                    <mat-card-title>Preferred Temperature Range</mat-card-title>
+                    <mat-card-subtitle>Set the preffered temperature range for your office building</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content class="temperature-customization-content">
+                    <p>
+                        The system will try to keep the room temperature within your target range.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Selected range:</p>
+                    <ngx-slider [(value)]="tempSlider.minValue" [(highValue)]="tempSlider.maxValue"
+                        [options]="tempSlider.options"></ngx-slider>
+
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-flat-button class="temp-reset-button">Reset</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div class="noise-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon aria-hidden="false" aria-label="Example home icon">volume_up</mat-icon>
+                    </div>
+                    <mat-card-title>Ambient Noise Threshold</mat-card-title>
+                    <mat-card-subtitle>Select how sensitive the system should react to ambient noise</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        Tell the system how sensitive it should react to ambient noise coming into your office space. 
+                        The system will then avoid and reduce noise levels that exceed your threshold.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Noise sensitivity:</p>
+                    <mat-button-toggle-group class="noise-threshold-toggle">
+                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="vsens">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">not_interested</mat-icon>
+                            Disabled</mat-button-toggle>
+                        <mat-button-toggle value="vsens">Low Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="vsens">Moderate Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="sens">High Sensitivity</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-flat-button class="temp-reset-button">Reset</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div class="noise-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon aria-hidden="false" aria-label="Example home icon">wb_sunny</mat-icon>
+                    </div>
+                    <mat-card-title>Light Sensitivity</mat-card-title>
+                    <mat-card-subtitle>How much light is too much?</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        Tell the system how sensitive it should react to ambient noise coming into your office space. 
+                        The system will then avoid and reduce noise levels that exceed your threshold.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Noise sensitivity:</p>
+                    <mat-button-toggle-group class="noise-threshold-toggle">
+                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="vsens">
+                            <mat-icon aria-hidden="false" aria-label="Example home icon">not_interested</mat-icon>
+                            Disabled</mat-button-toggle>
+                        <mat-button-toggle value="vsens">Low Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="vsens">Moderate Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="sens">High Sensitivity</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button class="temp-reset-button">Reset</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+    </div>
+</div>

@@ -25,17 +25,11 @@ export class ConsoleComponent implements OnInit {
 
 
   submitConsoleInput(){
-    let areaElem =  this.areaElem.nativeElement; 
     this.commandMemory.splice(1, 0, this.consoleInput)
     this.indexInMemory = 0;
     this.commandMemory[0] = "";
     this.handleConsoleInput(this.consoleInput)
-    //reset textfield by manipulating value property 
-    //!!!using two way binding to reset doesn't trigger the resize function correctly --> hack with timeout
-    setTimeout(function(){
-      areaElem.value="";
-    },0);
-    this.consoleInput = "";
+    this.clearConsole();    
   }
 
   consoleArrowNavigation(direction: string){
@@ -46,10 +40,7 @@ export class ConsoleComponent implements OnInit {
       if (this.commandMemory.length > this.indexInMemory+1){
         this.commandMemory[this.indexInMemory] = this.consoleInput == "\n"? "": this.consoleInput;
         this.indexInMemory++;
-        this.consoleInput = "";
-        setTimeout(function(){
-          comp.areaElem.nativeElement.value="";
-        },0);
+        this.clearConsole();
         this.consoleInput = comp.commandMemory[comp.indexInMemory];
         setTimeout(function(){
           comp.areaElem.nativeElement.value=comp.commandMemory[comp.indexInMemory];
@@ -59,10 +50,7 @@ export class ConsoleComponent implements OnInit {
     else if (this.indexInMemory>0){
       this.commandMemory[this.indexInMemory] = this.consoleInput == "\n"? "": this.consoleInput;
       this.indexInMemory--;
-      this.consoleInput = "";
-      setTimeout(function(){
-        comp.areaElem.nativeElement.value="";
-      },0);
+      this.clearConsole();
       this.consoleInput = comp.commandMemory[comp.indexInMemory];
       setTimeout(function(){
         comp.areaElem.nativeElement.value=comp.commandMemory[comp.indexInMemory];
@@ -70,6 +58,15 @@ export class ConsoleComponent implements OnInit {
     }
   }
 
+  clearConsole(){
+    //reset textfield by manipulating value property 
+    //!!!using two way binding to reset doesn't trigger the resize function correctly --> hack with timeout
+    let areaElem =  this.areaElem.nativeElement; 
+    this.consoleInput = "";
+    setTimeout(function(){
+      areaElem.value="";
+    },0);
+  }
 
 
   handleConsoleInput(input: string){

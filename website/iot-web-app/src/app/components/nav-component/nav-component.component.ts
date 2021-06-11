@@ -32,7 +32,7 @@ export class NavComponentComponent {
     {
       name: "Customize",
       material: "settings",
-      routerLink: "/sensors"
+      routerLink: "/customize"
     },
     {
       name: "Console",
