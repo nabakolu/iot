@@ -1,6 +1,30 @@
 <div class="grid-container">
     <h1 class="mat-h1">Customize Automation Policy</h1>
     <div class="customize-component-container">
+        <div class="noise-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon class="co2-heading-icon">co2</mat-icon>
+                    </div>
+                    <mat-card-title>CO<sub>2</sub> Concentration Target</mat-card-title>
+                    <mat-card-subtitle>Set your CO<sub>2</sub> concentration goal</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content class="co2-customization-content">
+                    <p>
+                        Select your target for the CO<sub>2</sub> concentration in your office. 
+                        The system will try to keep the air quality above the target value.
+                        A lower CO<sub>2</sub> target value requires more ventilation resulting in the windows being open for longer.
+                        This may make accomplishing other targets (e.g. noise isolation) harder to accomplish.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Air quality target:</p>
+                    <ngx-slider [(value)]="coSlider.value" [options]="coSlider.options"></ngx-slider>
+                </mat-card-content>
+                <mat-card-actions class="co2-card-actions">
+                    <button mat-flat-button class="temp-reset-button">Default</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
         <div class="temperature-threshold-container">
             <mat-card>
                 <mat-card-header>
@@ -20,7 +44,7 @@
 
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-flat-button class="temp-reset-button">Reset</button>
+                    <button mat-flat-button class="temp-reset-button">Default</button>
                 </mat-card-actions>
             </mat-card>
         </div>
@@ -49,7 +73,7 @@
                     </mat-button-toggle-group>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-flat-button class="temp-reset-button">Reset</button>
+                    <button mat-flat-button class="temp-reset-button">Default</button>
                 </mat-card-actions>
             </mat-card>
         </div>
@@ -57,17 +81,17 @@
             <mat-card>
                 <mat-card-header>
                     <div mat-card-avatar>
-                        <mat-icon aria-hidden="false" aria-label="Example home icon">wb_sunny</mat-icon>
+                        <mat-icon>wb_sunny</mat-icon>
                     </div>
                     <mat-card-title>Light Sensitivity</mat-card-title>
                     <mat-card-subtitle>How much light is too much?</mat-card-subtitle>
                 </mat-card-header>
                 <mat-card-content>
                     <p>
-                        Tell the system how sensitive it should react to ambient noise coming into your office space. 
-                        The system will then avoid and reduce noise levels that exceed your threshold.
+                        Tell the system how sensitive it should react to sunlight from the outside. 
+                        Higher sensitivity means that the system will use the blinds more actively. 
                     </p>
-                    <p class="temperature-range-selection-slider-header">Noise sensitivity:</p>
+                    <p class="temperature-range-selection-slider-header">Light sensitivity:</p>
                     <mat-button-toggle-group class="noise-threshold-toggle">
                         <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="vsens">
                             <mat-icon aria-hidden="false" aria-label="Example home icon">not_interested</mat-icon>
@@ -78,7 +102,7 @@
                     </mat-button-toggle-group>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-button class="temp-reset-button">Reset</button>
+                    <button mat-button class="temp-reset-button">Default</button>
                 </mat-card-actions>
             </mat-card>
         </div>

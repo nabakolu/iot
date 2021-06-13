@@ -17,10 +17,12 @@
     flex-direction: column;
     width: 80%;
     height: 80%;
+    flex-wrap: wrap;
 }
 
 .customize-component-container > div{
-    margin-top: 15px
+    margin-top: 15px;
+    padding-right: 15px;
 }
 
 .temperature-threshold-container {
@@ -96,4 +98,39 @@
 
 .noise-threshold-toggle-disabled-button {
     background-color: rgba(251, 163, 0, 0.829) !important;
+}
+
+.co2-heading-icon {
+    font-size: 40px;
+}
+
+:host ::ng-deep .co2-customization-content .ngx-slider {
+    width: 80%;
+    margin-left: 20px;
+    margin-top: 0px;
+}
+
+.co2-card-actions {
+    margin-top: 30px;
+}
+
+/* bar in background */
+
+:host ::ng-deep .co2-customization-content .ngx-slider .ngx-slider-bar {
+    background-image: linear-gradient(to right, red , yellow, green);;
+    opacity: 0.4;
+    height: 5px;
+}
+
+/* selection handles */
+
+:host ::ng-deep .co2-customization-content .ngx-slider .ngx-slider-pointer {
+    background-color: rgba(103, 58, 183, 0.97);
+    outline: none !important;
+}
+
+/* point in the middle of selection handle */
+
+:host ::ng-deep .co2-customization-content .ngx-slider .ngx-slider-pointer:after {
+    background-color: rgba(255, 193, 7, 0.8);
 }

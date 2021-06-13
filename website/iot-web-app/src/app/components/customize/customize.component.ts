@@ -7,6 +7,11 @@ interface TempSliderModel {
   options: Options;
 }
 
+interface coSliderModel {
+  value: number;
+  options: Options;
+}
+
 
 @Component({
   selector: 'app-customize',
@@ -32,6 +37,22 @@ export class CustomizeComponent implements OnInit {
             return value + "&#8451;";
         }
       }
+    },
+  };
+
+  coSlider: coSliderModel = {
+    value: 5,
+    options: {
+      showTicks: true,
+      hideLimitLabels: true,
+      hidePointerLabels: true,
+      stepsArray: [
+        {value: 1, legend: '<b>Poor</b>'},
+        {value: 2, legend: '<b>Fair</b>'},
+        {value: 3, legend: '<b>Average</b>'},
+        {value: 4, legend: '<b>Good</b>'},
+        {value: 5, legend: '<b>Excellent</b>'}
+      ],
     },
   };
 
