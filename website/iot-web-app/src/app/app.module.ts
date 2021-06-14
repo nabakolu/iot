@@ -34,6 +34,8 @@ import {
 import { CustomizeComponent } from './components/customize/customize.component';
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { NgxUiLoaderModule } from "ngx-ui-loader";
+import { WindowControlComponent } from './components/iot-dashboard/window-control/window-control.component';
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
   hostname: '82.165.70.137',
@@ -51,6 +53,7 @@ export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
     SensorListComponentComponent,
     ConsoleComponent,
     CustomizeComponent,
+    WindowControlComponent,
   ],
   imports: [
     BrowserModule,
@@ -75,6 +78,7 @@ export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
     MqttModule.forRoot(MQTT_SERVICE_OPTIONS),
     NgxSliderModule,
     MatButtonToggleModule,
+    NgxUiLoaderModule,
   ],
   providers: [DataService],
   bootstrap: [AppComponent]
