@@ -25,7 +25,6 @@
     box-shadow: 0px 2px 3px -1px rgb(0 0 0 / 20%);
 }
 
-
 mat-card {
     z-index: 1;
 }
@@ -57,6 +56,13 @@ mat-card {
 .window-control-button-title {
     font-size: 115%;
     margin-bottom: 0;
+    width: 130px;
+}
+
+.window-control-blinds-button-title {
+    font-size: 115%;
+    margin-bottom: 0;
+    width: 130px;
 }
 
 .window-control-button-container {
@@ -68,7 +74,8 @@ mat-card {
   }
 
 .window-control-card {
-    min-width: 500px !important;
+    min-width: 530px !important;
+    max-width: 800px !important;
 }
 
 .window-control-card-content {
@@ -94,4 +101,40 @@ mat-card {
     background-image: linear-gradient(to right, #7cffcb 0%, #74f2ce 74%);
     padding: 5px;
     border-radius: 5px;
+}
+
+.curr-blind-state-indicator.closed{
+    background-image: linear-gradient(to right, #dd9fa6 0%, #e58c8a 74%);
+
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.curr-blind-state-indicator.open{
+    background-image: linear-gradient(to right, #7cffcb 0%, #74f2ce 74%);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.current-blind-state-container {
+    font-size: 115%;
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.blind-control-options-container {
+    width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+    margin-top: 15px;
+    padding-bottom: 14px;
+    align-items: center;
+}
+
+.card-info-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    opacity: 0.8;
 }

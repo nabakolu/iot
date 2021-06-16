@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./window-control.component.css', './../iot-dashboard.component.css']
 })
 export class WindowControlComponent implements OnInit {
-  selectedModeIndex?: number = undefined;
+  selectedWindowModeIndex?: number = undefined;
+  selectedBlindsModeIndex?: number = undefined;
 
   constructor() { }
 

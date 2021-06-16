@@ -1,0 +1,44 @@
+<mat-card class="heating-control-card control-dashboard-component">
+    <div class="card-title-icon-container bg-color-grad5">
+        <mat-icon>thermostat</mat-icon>
+    </div>
+    <mat-card-header>
+        <mat-card-title>
+            Heating Control: Example Heater 1
+            <button mat-icon-button class="card-info-button" 
+            matTooltip="Configuration for one heating element. Also shows the current state the heating element is in and the current temperature.">
+                <mat-icon>info</mat-icon>
+            </button>
+        </mat-card-title>
+    </mat-card-header>
+
+
+    <mat-card-content class="heating-control-card-content">
+        <div class="current-heating-state-container">
+            <div class="indoor-temp-container">
+                Indoor temperature:&nbsp;
+                <div class="curr-indoor-temp">19.8&#8451;</div>
+            </div>
+            <div class="outdoor-temp-container">
+                Outdoor temperature:&nbsp;
+                <div class="curr-outdoor-temp">13.4&#8451;</div>
+            </div>
+        </div>
+        <div class="heater-control-options-container">
+            <p class="heater-control-button-title">Control heater:</p>
+            <div class="heater-control-button-group-container">
+                <div class="heater-control-button-container automatic-mode-container">
+                    <button (click)='selectedHeatingMode = 0;' mat-flat-button color="accent"
+                        [ngClass]="{'currently-active': selectedHeatingMode === 0}">Automatic Mode</button>
+                </div>
+                <div class="heater-manual-intensity-control-container"
+                [ngClass]="{'currently-active-manual-heater': selectedHeatingMode === 1}"
+                (click)='selectedHeatingMode = 1;'
+                >
+                    <div class="manual-heating-slider-title">Set power of heater manually:</div>
+                    <ngx-slider [(value)]="heaterIntensitySlider.value" [options]="heaterIntensitySlider.options"></ngx-slider>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>
