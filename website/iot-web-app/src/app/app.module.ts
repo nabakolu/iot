@@ -38,6 +38,9 @@ import { NgxUiLoaderModule } from "ngx-ui-loader";
 import { WindowControlComponent } from './components/iot-dashboard/window-control/window-control.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { HeatingControlComponent } from './components/iot-dashboard/heating-control/heating-control.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { UpdateStatusComponent } from './components/snackbars/update-status/update-status.component';
+
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
   hostname: '82.165.70.137',
@@ -57,6 +60,7 @@ export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
     CustomizeComponent,
     WindowControlComponent,
     HeatingControlComponent,
+    UpdateStatusComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,7 +86,8 @@ export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
     NgxSliderModule,
     MatButtonToggleModule,
     NgxUiLoaderModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule
   ],
   providers: [DataService],
   bootstrap: [AppComponent]

@@ -18,7 +18,10 @@
                         This may make other targets (e.g. noise isolation) harder to accomplish.
                     </p>
                     <p class="temperature-range-selection-slider-header">Air quality target:</p>
-                    <ngx-slider [(value)]="coSlider.value" [options]="coSlider.options"></ngx-slider>
+                    <ngx-slider [(value)]="coSlider.value"
+                    [options]="coSlider.options"
+                    (userChangeEnd)="onCoTargetUserChange($event)"
+                    ></ngx-slider>
                 </mat-card-content>
                 <mat-card-actions class="co2-card-actions">
                     <button mat-flat-button class="temp-reset-button">Default</button>

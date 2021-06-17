@@ -1,5 +1,7 @@
-import { LabelType, Options } from '@angular-slider/ngx-slider';
+import { ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
 import { Component, OnInit } from '@angular/core';
+import { Subject } from 'rxjs';
+import { DataService } from 'src/app/services/data.service';
 
 interface TempSliderModel {
   minValue: number;
@@ -55,10 +57,16 @@ export class CustomizeComponent implements OnInit {
       ],
     },
   };
+  coPreference$: Subject<number> = new Subject<number>();
 
-  constructor() { }
+  constructor(public dataServiceInstance: DataService) { 
+    dataServiceInstance.updateCoPreferenceMQTT(this.coPreference$.asObservable());
+  }
 
-  ngOnInit(): void {
+  ngOnInit(): void {  }
+
+  onCoTargetUserChange(context: ChangeContext){
+    this.coPreference$.next(context.value);
   }
 
 }
