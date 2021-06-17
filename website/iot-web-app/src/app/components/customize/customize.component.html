@@ -43,7 +43,9 @@
                     </p>
                     <p class="temperature-range-selection-slider-header">Selected range:</p>
                     <ngx-slider [(value)]="tempSlider.minValue" [(highValue)]="tempSlider.maxValue"
-                        [options]="tempSlider.options"></ngx-slider>
+                        [options]="tempSlider.options"
+                        (userChangeEnd)="onTempTargetUserChange($event)"
+                        ></ngx-slider>
 
                 </mat-card-content>
                 <mat-card-actions>
@@ -66,13 +68,16 @@
                         The system will then avoid and reduce noise levels that exceed your threshold.
                     </p>
                     <p class="temperature-range-selection-slider-header">Noise sensitivity:</p>
-                    <mat-button-toggle-group class="noise-threshold-toggle">
-                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="vsens">
-                            <mat-icon aria-hidden="false" aria-label="Example home icon">not_interested</mat-icon>
+                    <mat-button-toggle-group class="noise-threshold-toggle"
+                    [(ngModel)]="this.selectedAmbientNoiseValue"
+                    (change)="this.onAmbientNoiseUserChange($event)"
+                    >
+                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="disabled">
+                            <mat-icon>not_interested</mat-icon>
                             Disabled</mat-button-toggle>
-                        <mat-button-toggle value="vsens">Low Sensitivity</mat-button-toggle>
-                        <mat-button-toggle value="vsens">Moderate Sensitivity</mat-button-toggle>
-                        <mat-button-toggle value="sens">High Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="low">Low Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="mid">Moderate Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="high">High Sensitivity</mat-button-toggle>
                     </mat-button-toggle-group>
                 </mat-card-content>
                 <mat-card-actions>
@@ -95,13 +100,16 @@
                         Higher sensitivity means that the system will use the blinds more actively. 
                     </p>
                     <p class="temperature-range-selection-slider-header">Light sensitivity:</p>
-                    <mat-button-toggle-group class="noise-threshold-toggle">
-                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="vsens">
-                            <mat-icon aria-hidden="false" aria-label="Example home icon">not_interested</mat-icon>
+                    <mat-button-toggle-group class="noise-threshold-toggle"
+                    [(ngModel)]="this.selectedLightSenseValue"
+                    (change)="this.onLightSensUserChange($event)"
+                    >
+                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="disabled">
+                            <mat-icon>not_interested</mat-icon>
                             Disabled</mat-button-toggle>
-                        <mat-button-toggle value="vsens">Low Sensitivity</mat-button-toggle>
-                        <mat-button-toggle value="vsens">Moderate Sensitivity</mat-button-toggle>
-                        <mat-button-toggle value="sens">High Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="low">Low Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="mid">Moderate Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="high">High Sensitivity</mat-button-toggle>
                     </mat-button-toggle-group>
                 </mat-card-content>
                 <mat-card-actions>

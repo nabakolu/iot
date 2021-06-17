@@ -1,6 +1,6 @@
 import { ChangeContext, LabelType, Options } from '@angular-slider/ngx-slider';
 import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { DataService } from 'src/app/services/data.service';
 
 interface TempSliderModel {
@@ -57,16 +57,81 @@ export class CustomizeComponent implements OnInit {
       ],
     },
   };
+  selectedAmbientNoiseValue?: string;
+  selectedLightSenseValue?: string;
+
   coPreference$: Subject<number> = new Subject<number>();
+  tempPreference$: Subject<any> = new Subject<Array<number>>();
+  ambientNoisePref$: Subject<any> = new Subject<string>();
+  lightSensPref$: Subject<any> = new Subject<string>();
+
+  subscriptions: Array<Subscription> = [];  
+
 
   constructor(public dataServiceInstance: DataService) { 
-    dataServiceInstance.updateCoPreferenceMQTT(this.coPreference$.asObservable());
+    //---- CO2
+    //change from client
+    this.subscriptions.push(dataServiceInstance.updateCoPreferenceMQTT(this.coPreference$.asObservable()));
+    //change from server
+    this.subscriptions.push(this.dataServiceInstance.coPreference$.subscribe(this.onCoTargetServerChange.bind(this)));
+    //---- CO2
+    //change from client
+    this.subscriptions.push(dataServiceInstance.updateTempPreferenceMQTT(this.tempPreference$.asObservable()));
+    //change from server
+    this.subscriptions.push(this.dataServiceInstance.tempPreference$.subscribe(this.onTempTargetServerChange.bind(this)));
+    //---- Ambient Noise
+    //change from client
+    this.subscriptions.push(dataServiceInstance.updateAmbientNoisePreferenceMQTT(this.ambientNoisePref$.asObservable()));
+    //change from server
+    this.subscriptions.push(this.dataServiceInstance.ambientNoisePref$.subscribe(this.onAmbientNoiseServerChange.bind(this)));
+    //---- Light Sensitivity
+    //change from client
+    this.subscriptions.push(dataServiceInstance.updateLightSensePreferenceMQTT(this.lightSensPref$.asObservable()));
+    //change from server
+    this.subscriptions.push(this.dataServiceInstance.lightSensPref$.subscribe(this.onLightSensServerChange.bind(this)));
   }
 
   ngOnInit(): void {  }
 
+  ngOnDestroy() {
+    //unsubscribe all subscriptions of this component
+    for(let i=0; i<this.subscriptions.length; i++){
+      this.subscriptions[i].unsubscribe();
+    }
+  }
+
   onCoTargetUserChange(context: ChangeContext){
     this.coPreference$.next(context.value);
+  }
+
+  onCoTargetServerChange(message: any){
+    this.coSlider.value = message;
+  }
+
+  onTempTargetUserChange(context: ChangeContext){
+    this.tempPreference$.next([context.value, context.highValue]);
+  }
+
+  onTempTargetServerChange(message: any){
+    console.log("message temp arr")
+    this.tempSlider.minValue = message[0];
+    this.tempSlider.maxValue = message[1];
+  }
+
+  onAmbientNoiseUserChange(changeEv: any){
+    this.ambientNoisePref$.next(changeEv.value);
+  }
+
+  onAmbientNoiseServerChange(message: string){
+    this.selectedAmbientNoiseValue = message;
+  }
+
+  onLightSensUserChange(changeEv: any){
+    this.lightSensPref$.next(changeEv.value);
+  }
+
+  onLightSensServerChange(message: string){
+    this.selectedLightSenseValue = message;
   }
 
 }

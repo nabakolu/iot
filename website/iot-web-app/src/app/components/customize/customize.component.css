@@ -16,7 +16,7 @@
     display: flex;
     flex-direction: column;
     width: 80%;
-    height: 80%;
+    height: 100%;
     flex-wrap: wrap;
     align-content: flex-start;
 }
@@ -78,7 +78,7 @@
     background-color: rgba(255, 193, 7, 0.8);
     font-weight: 400;
     text-align: center;
-    flex: 1 1 100%;
+    flex: 1 100%;
 }
 
 .noise-threshold-toggle .mat-button-toggle-checked {
