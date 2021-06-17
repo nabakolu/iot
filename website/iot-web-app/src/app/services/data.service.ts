@@ -111,7 +111,7 @@ export class DataService {
   updateTempPreferenceMQTT(value$: Observable<Array<number>>) {
     return value$.pipe(
       debounceTime(800),
-      distinctUntilChanged()
+      distinctUntilChanged((prev, curr) => prev[0] === curr[0] && prev[1] === curr[1])
     ).subscribe(result => {
       console.log("changing temp pref on server to:", result)
       this._mqttService.publish(this.prefTempValTopic, JSON.stringify({data: result, id: this.dataServiceId}), { qos: 1, retain: true }).subscribe(
