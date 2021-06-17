@@ -141,7 +141,7 @@ export class DataService {
       debounceTime(800),
       distinctUntilChanged()
     ).subscribe(result => {
-      console.log("changing noise pref on server to:", result)
+      console.log("changing light sense pref on server to:", result)
       this._mqttService.publish(this.lightSenseTopic, JSON.stringify({data: result, id: this.dataServiceId}), { qos: 1, retain: true }).subscribe(
         () => { },
         () => {this.showUpdateSnackbar("Failed to update light sensitivity preference", false)},

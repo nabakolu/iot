@@ -108,6 +108,11 @@ export class CustomizeComponent implements OnInit {
     this.coSlider.value = message;
   }
 
+  setCoToDefault(){
+    this.coPreference$.next(4);
+    this.coSlider.value = 4;
+  }
+
   onTempTargetUserChange(context: ChangeContext){
     this.tempPreference$.next([context.value, context.highValue]);
   }
@@ -118,6 +123,12 @@ export class CustomizeComponent implements OnInit {
     this.tempSlider.maxValue = message[1];
   }
 
+  setTempTargetToDefault(){
+    this.tempPreference$.next([17, 23]);
+    this.tempSlider.minValue = 17;
+    this.tempSlider.maxValue = 23;
+  }
+
   onAmbientNoiseUserChange(changeEv: any){
     this.ambientNoisePref$.next(changeEv.value);
   }
@@ -126,12 +137,22 @@ export class CustomizeComponent implements OnInit {
     this.selectedAmbientNoiseValue = message;
   }
 
+  setAmbientNoiseToDefault(){
+    this.ambientNoisePref$.next("mid");
+    this.selectedAmbientNoiseValue = "mid";
+  }
+
   onLightSensUserChange(changeEv: any){
     this.lightSensPref$.next(changeEv.value);
   }
 
   onLightSensServerChange(message: string){
     this.selectedLightSenseValue = message;
+  }
+
+  setLightSenseToDefault(){
+    this.lightSensPref$.next("mid");
+    this.selectedLightSenseValue = "mid";
   }
 
 }

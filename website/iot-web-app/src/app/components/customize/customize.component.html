@@ -24,7 +24,9 @@
                     ></ngx-slider>
                 </mat-card-content>
                 <mat-card-actions class="co2-card-actions">
-                    <button mat-flat-button class="temp-reset-button">Default</button>
+                    <button mat-flat-button class="temp-reset-button"
+                    (click)="setCoToDefault()"
+                    >Default</button>
                 </mat-card-actions>
             </mat-card>
         </div>
@@ -49,7 +51,9 @@
 
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-flat-button class="temp-reset-button">Default</button>
+                    <button mat-flat-button class="temp-reset-button"
+                    (click)="setTempTargetToDefault()"
+                    >Default</button>
                 </mat-card-actions>
             </mat-card>
         </div>
@@ -81,7 +85,9 @@
                     </mat-button-toggle-group>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-flat-button class="temp-reset-button">Default</button>
+                    <button mat-flat-button class="temp-reset-button"
+                    (click)="setAmbientNoiseToDefault()"
+                    >Default</button>
                 </mat-card-actions>
             </mat-card>
         </div>
@@ -113,7 +119,9 @@
                     </mat-button-toggle-group>
                 </mat-card-content>
                 <mat-card-actions>
-                    <button mat-button class="temp-reset-button">Default</button>
+                    <button mat-button class="temp-reset-button"
+                    (click)="setLightSenseToDefault()"
+                    >Default</button>
                 </mat-card-actions>
             </mat-card>
         </div>
