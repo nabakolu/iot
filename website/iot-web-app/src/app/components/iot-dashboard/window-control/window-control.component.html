@@ -1,0 +1,59 @@
+<mat-card class="window-control-card control-dashboard-component">
+    <div class="card-title-icon-container bg-color-grad4">
+        <mat-icon>window</mat-icon>
+    </div>
+    <mat-card-header>
+        <mat-card-title>
+            Window Control: Example Window 1
+            <button mat-icon-button class="card-info-button" 
+            matTooltip="Configuration for the operating mode of the window and its associated blind. Also shows current state that the window and the blind are in.">
+                <mat-icon>info</mat-icon>
+            </button>
+        </mat-card-title>
+    </mat-card-header>
+
+
+    <mat-card-content class="window-control-card-content">
+        <div class="current-window-state-container">Current state of window is:&nbsp;
+            <span class="curr-window-state-indicator closed">closed</span>
+        </div>
+        <div class="window-control-options-container">
+            <p class="window-control-button-title">Control window:</p>
+            <div class="window-control-button-group-container">
+                <div class="window-control-button-container automatic-mode-container">
+                    <button (click)='selectedWindowModeIndex = 0;' mat-flat-button color="accent"
+                        [ngClass]="{'currently-active': selectedWindowModeIndex === 0}">Automatic Mode</button>
+                </div>
+                <div class="window-control-button-container">
+                    <button (click)='selectedWindowModeIndex = 1;' mat-flat-button color="accent"
+                        [ngClass]="{'currently-active': selectedWindowModeIndex === 1}">Open Window</button>
+                </div>
+                <div class="window-control-button-container">
+                    <button (click)='selectedWindowModeIndex = 2;' mat-flat-button color="accent"
+                        [ngClass]="{'currently-active': selectedWindowModeIndex === 2}">Close Window</button>
+                </div>
+            </div>
+        </div>
+        <mat-divider inset="true"></mat-divider>
+        <div class="current-blind-state-container">Current state of blind is:&nbsp;
+            <span class="curr-blind-state-indicator open">open</span>
+        </div>
+        <div class="blind-control-options-container">
+            <p class="window-control-blinds-button-title">Control blinds:</p>
+            <div class="window-control-button-group-container">
+                <div class="window-control-button-container automatic-mode-container">
+                    <button (click)='selectedBlindsModeIndex = 0;' mat-flat-button color="accent"
+                        [ngClass]="{'currently-active': selectedBlindsModeIndex === 0}">Automatic Mode</button>
+                </div>
+                <div class="window-control-button-container">
+                    <button (click)='selectedBlindsModeIndex = 1;' mat-flat-button color="accent"
+                        [ngClass]="{'currently-active': selectedBlindsModeIndex === 1}">Open Blinds</button>
+                </div>
+                <div class="window-control-button-container">
+                    <button (click)='selectedBlindsModeIndex = 2;' mat-flat-button color="accent"
+                        [ngClass]="{'currently-active': selectedBlindsModeIndex === 2}">Close Blinds</button>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,53 @@
+.grid-container {
+  margin: 20px;
+}
+
+
+.card-title-icon-container {
+  float: left;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: -30px !important;
+  display: flex;
+}
+
+.card-title-icon-container mat-icon {
+  font-size: 40px;
+  width: auto;
+  height: auto;
+  color: white;
+}
+
+.bg-color-grad1 {
+  background: linear-gradient(60deg, rgba(255, 193, 7, 0.97), rgba(255, 203, 7, 0.97));
+  box-shadow: 0 4px 20px 0 rgb(0 0 0 / 10%), 0 7px 10px -5px rgb(255 203 7 / 45%);
+}
+
+.bg-color-grad2 {
+  background: linear-gradient(60deg, rgba(145, 81, 255, 0.97), rgba(133, 62, 255, 0.97));
+  box-shadow: 0 4px 20px 0 rgb(0 0 0 / 10%), 0 7px 10px -5px rgb(133 62 255 / 45%);
+}
+
+.bg-color-grad3 {
+  background: linear-gradient(60deg, rgba(138, 202, 47, 0.97), rgba(132, 189, 53, 0.97));
+  box-shadow: 0 4px 20px 0 rgb(0 0 0 / 10%), 0 7px 10px -5px rgb(138 202 47/ 45%);
+}
+
+.bg-color-grad4 {
+  background: linear-gradient(60deg, rgba(27, 156, 229, 0.97), rgba(16, 136, 206, 0.97));
+  box-shadow: 0 4px 20px 0 rgb(0 0 0 / 10%), 0 7px 10px -5px rgb(16 136 206/ 45%);
+}
+
+.bg-color-grad5 {
+  background: linear-gradient(60deg, rgba(201, 101, 103, 0.97), rgba(195, 95, 96, 0.97));
+  box-shadow: 0 4px 20px 0 rgb(0 0 0 / 10%), 0 7px 10px -5px rgb(201 101 103/ 45%);
+}
+
+.control-components-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.control-dashboard-component {
+  margin: 15px;
+}

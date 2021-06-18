@@ -1,0 +1,140 @@
+.window-control-options-container {
+    width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+    margin-top: 15px;
+    padding-bottom: 25px;
+    align-items: center;
+    
+}
+
+.window-control-button-group-container {
+    display: inline-flex;
+    max-width: 600px;
+}
+
+.window-control-button-container{
+
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.window-control-button-container button{
+    font-size: 15px;
+    padding: 12px;
+    box-shadow: 0px 2px 3px -1px rgb(0 0 0 / 20%);
+}
+
+mat-card {
+    z-index: 1;
+}
+
+.currently-active::after{
+    background: linear-gradient(#8c58e7ea, #6236afd5);
+    /* background: linear-gradient(#e66465, #9198e5); */
+    /* background: #673ab7; */
+    opacity: 0.9;
+    top: -8px;
+    left: -8px;
+    bottom: -20px;
+    right: -8px;
+    position: absolute;
+    z-index: -1;   
+    border-radius: 6px;
+    /* opacity: 0.8; */
+
+
+    content: "active";
+    color: white;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    font-size: 90%;
+    line-height: 1.5;
+}
+
+.window-control-button-title {
+    font-size: 115%;
+    margin-bottom: 0;
+    width: 130px;
+}
+
+.window-control-blinds-button-title {
+    font-size: 115%;
+    margin-bottom: 0;
+    width: 130px;
+}
+
+.window-control-button-container {
+    border-right: 5px black;
+}
+
+.automatic-mode-container {
+    border-right: 1px solid #d2d2d2;
+  }
+
+.window-control-card {
+    min-width: 530px !important;
+    max-width: 800px !important;
+}
+
+.window-control-card-content {
+    margin-top: 35px;
+    display: flex;
+    flex-direction: column;
+}
+
+.current-window-state-container {
+    font-size: 115%;
+    display: inline-flex;
+    align-items: center;
+}
+
+.curr-window-state-indicator.closed{
+    background-image: linear-gradient(to right, #dd9fa6 0%, #e58c8a 74%);
+
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.curr-window-state-indicator.open{
+    background-image: linear-gradient(to right, #7cffcb 0%, #74f2ce 74%);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.curr-blind-state-indicator.closed{
+    background-image: linear-gradient(to right, #dd9fa6 0%, #e58c8a 74%);
+
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.curr-blind-state-indicator.open{
+    background-image: linear-gradient(to right, #7cffcb 0%, #74f2ce 74%);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.current-blind-state-container {
+    font-size: 115%;
+    display: inline-flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.blind-control-options-container {
+    width: 100%;
+    display: inline-flex;
+    flex-direction: row;
+    margin-top: 15px;
+    padding-bottom: 14px;
+    align-items: center;
+}
+
+.card-info-button {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    opacity: 0.8;
+}
