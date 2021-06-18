@@ -1,0 +1,16 @@
+sensors/tempreature/[location]
+	   /rain/[location]
+	   /CO2/[location]
+	   /noise/[location]
+	   /wind/[location]
+	   /sun/[location]
+
+actuators/windows/[location]/command
+							/status
+							/override
+		 /blinds/[location]/command
+		 				   /status
+						   /override
+		 /heating/[location]/command
+		 					/status
+							/override
