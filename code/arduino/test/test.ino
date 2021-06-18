@@ -1,5 +1,5 @@
-#include "window.h"
-#include "blinds.h"
+#include "window.c"
+#include "blinds.c"
 
 window w;
 
