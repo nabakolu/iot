@@ -46,18 +46,12 @@ void setup() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-
-	Serial.print("Message arrived in topic: ");
-	Serial.println(topic);
-
-	Serial.print("Message:");
-	for (int i = 0; i < length; i++) {
-		Serial.print((char)payload[i]);
+	char message[length+1]; // will later contain only the message, without sender information
+	for(int i = 0; i < length; i++){ // copy message from payload to message
+		message[i] = (char) payload[i];
 	}
-
-	Serial.println();
-	Serial.println("-----------------------");
-
+	message[length] = '\0'; // add null byte to terminate string
+	Serial.println(message);
 }
 
 void loop() {
