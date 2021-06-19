@@ -1,12 +1,65 @@
-#include "window.c"
-#include "blinds.c"
+#include <Servo.h>
+#include <ESP8266WiFi.h>
+#include <PubSubClient.h>
 
-window w;
+const char* ssid = "test"; // Enter your WiFi name
+const char* password =  "12345678"; // Enter WiFi password
+const char* mqttServer = "82.165.70.137";
+const int mqttPort = 1884;
+const char* mqttUser = "iotproject";
+const char* mqttPassword = "iotaccesspw%";
+
+WiFiClient espClient;
+PubSubClient client(espClient);
 
 void setup() {
-	w.attach(D8);
-	close_window(&w);
+	Serial.begin(9600);
+	WiFi.begin(ssid, password);
+	while (WiFi.status() != WL_CONNECTED) {
+		delay(500);
+		Serial.println("Connecting to WiFi..");
+	}
+	Serial.println("Connected to the WiFi network");
+
+	client.setServer(mqttServer, mqttPort);
+	client.setCallback(callback);
+
+	while (!client.connected()) {
+		Serial.println("Connecting to MQTT...");
+
+		if (client.connect("ESP8266Client", mqttUser, mqttPassword )) {
+
+			Serial.println("connected");  
+
+		} else {
+
+			Serial.print("failed with state ");
+			Serial.print(client.state());
+			delay(2000);
+
+		}
+	}
+
+	client.publish("esp/test", "hello"); //Topic name
+	client.subscribe("esp/test");
+
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+
+	Serial.print("Message arrived in topic: ");
+	Serial.println(topic);
+
+	Serial.print("Message:");
+	for (int i = 0; i < length; i++) {
+		Serial.print((char)payload[i]);
+	}
+
+	Serial.println();
+	Serial.println("-----------------------");
+
 }
 
 void loop() {
+	client.loop();
 }
