@@ -6,11 +6,11 @@ sensors/tempreature/[location]
 	   /sun/[location]
 
 actuators/windows/[location]/command
-							/status
-							/override
+							/status --> [open, closed]
+							/mode --> [auto, open, close]
 		 /blinds/[location]/command
-		 				   /status
-						   /override
+		 				   /status --> [open, closed]
+						   /mode --> [auto, open, close]
 		 /heating/[location]/command
-		 					/status
-							/override
+		 					/status --> 0-100 //percentage of maximal heating power
+							/mode --> [auto, manual]
