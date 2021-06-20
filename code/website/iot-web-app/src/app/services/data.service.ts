@@ -96,7 +96,7 @@ export class DataService {
     }
     //check if sensor type for location already exists if not add sensor type
     if(!this.actuators.get(location)!.has(type)){
-      let actuator: Actuator = {type: type, location: location, setting: null, status: null}
+      let actuator: Actuator = {type: type, location: location, setting: "auto", status: null}
       this.actuators.get(location)?.set(type, actuator)
     }
   }

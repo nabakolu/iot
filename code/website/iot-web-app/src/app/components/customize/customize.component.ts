@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { DataService } from 'src/app/services/data.service';
 
+
 interface TempSliderModel {
   minValue: number;
   maxValue: number;

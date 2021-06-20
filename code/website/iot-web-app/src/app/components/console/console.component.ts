@@ -91,10 +91,14 @@ Available commands are:
   -help
   -mqtt -[topic] -[message]
       example: mqtt -test
-  -mockWindow -[location]
-      example: mockWindow -north_lower
-  -windowChange -[location] -[change] -[msg]
-      example: windowChange -north_lower -status -open
+  -mockwindow -[location]
+      example: mockwindow -north_lower
+  -mockwinblin -[location]
+      example mockwinblin -north-lower
+  -changewindow -[location] -[change] -[msg]
+      example: changewindow -north_lower -status -open
+  -changeblind -[location] -[change] -[msg]
+      example: changeblind -north_lower -status -open
   `
     }
     else if (command.toLowerCase().startsWith("mqtt")){
@@ -104,19 +108,34 @@ Available commands are:
       this.dataServiceInstance.publishMQTT(topic, message, false);
       return "Send MQTT message to topic: " + topic
     }
+    else if (command.toLowerCase().startsWith("mockwinblin")){
+      let cmdParts: Array<string> = command.split("-")
+      let location: string = cmdParts[1].trim()
+      this.dataServiceInstance.publishMQTT("/actuators/windows/" +location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("/actuators/blinds/" +location +"/mock", "", false);
+      return "Created temporary blank window and blind with location: " + location
+    }
     else if (command.toLowerCase().startsWith("mockwindow")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
       this.dataServiceInstance.publishMQTT("/actuators/windows/" +location +"/mock", "", false);
       return "Created temporary blank window with location: " + location
     }
-    else if (command.toLowerCase().startsWith("windowchange")){
+    else if (command.toLowerCase().startsWith("changewindow")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
       let change: string = cmdParts[2].trim()
       let msg: string = cmdParts[3].trim()
       this.dataServiceInstance.publishMQTT("/actuators/windows/" +location +"/" + change, msg, false);
-      return "Created temporary blank window with location: " + location
+      return "Change applied for window with location: " + location
+    }
+    else if (command.toLowerCase().startsWith("changeblind")){
+      let cmdParts: Array<string> = command.split("-")
+      let location: string = cmdParts[1].trim()
+      let change: string = cmdParts[2].trim()
+      let msg: string = cmdParts[3].trim()
+      this.dataServiceInstance.publishMQTT("/actuators/blinds/" +location +"/" + change, msg, false);
+      return "Change applied for blind with location: " + location
     }
     else{
       return "Unrecognized command type 'help' to get an overview of available commands"

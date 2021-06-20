@@ -2,7 +2,7 @@ export interface Actuator {
     type: string,
     location: string,
     status: string | null,
-    setting: string | null
+    setting: string
 }
 
 //TODO change status and settings to enum for separate interfaces to make sense
