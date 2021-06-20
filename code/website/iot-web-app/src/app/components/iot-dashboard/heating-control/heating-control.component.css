@@ -91,18 +91,18 @@ mat-card {
     border-right: 1px solid #d2d2d2;
 }
 
-.heater-control-button-container{
+.heater-control-button-container {
     padding-left: 20px;
     padding-right: 20px;
 }
 
-.heater-control-button-container button{
+.heater-control-button-container button {
     font-size: 15px;
     padding: 12px;
     box-shadow: 0px 2px 3px -1px rgb(0 0 0 / 20%);
 }
 
-.currently-active::after{
+.currently-active::after {
     background: linear-gradient(#8c58e7ea, #6236afd5);
     /* background: linear-gradient(#e66465, #9198e5); */
     /* background: #673ab7; */
@@ -112,11 +112,9 @@ mat-card {
     bottom: -20px;
     right: -8px;
     position: absolute;
-    z-index: -1;   
+    z-index: -1;
     border-radius: 6px;
     /* opacity: 0.8; */
-
-
     content: "active";
     color: white;
     display: flex;
@@ -126,14 +124,14 @@ mat-card {
     line-height: 1.5;
 }
 
-.currently-active-manual-heater::after{
+.currently-active-manual-heater::after {
     background: linear-gradient(#8c58e7ea, #6236afd5);
     /* background: linear-gradient(#e66465, #9198e5); */
     /* background: #673ab7; */
     opacity: 0.9;
     position: absolute;
     width: inherit;
-    z-index: -1;   
+    z-index: -1;
     border-radius: 6px;
     margin-top: -10px;
     padding-right: 10px;
@@ -142,8 +140,6 @@ mat-card {
     padding-top: 10px;
     height: 100px;
     /* opacity: 0.8; */
-
-
     content: "active";
     color: white;
     display: flex;
@@ -191,6 +187,36 @@ mat-card {
     outline: none !important;
 }
 
-.manual-heating-slider-title{
+.manual-heating-slider-title {
     font-weight: 500;
+}
+
+/* loader */
+
+.lds-dual-ring {
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    border-color: rgba(103, 58, 183, 0.8) transparent rgba(103, 58, 183, 0.8) transparent;
+    animation: lds-dual-ring 3s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

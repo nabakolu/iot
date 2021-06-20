@@ -21,13 +21,13 @@ export class NavComponentComponent {
     },
     {
       name: "Sensors",
-      material: "developer_board",
+      material: "sensors",
       routerLink: "/sensors"
     },
     {
       name: "Actuators",
-      material: "sensors",
-      routerLink: "/sensors"
+      material: "developer_board",
+      routerLink: "/actuators"
     },
     {
       name: "Customize",

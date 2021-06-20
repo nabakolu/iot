@@ -40,6 +40,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { HeatingControlComponent } from './components/iot-dashboard/heating-control/heating-control.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { UpdateStatusComponent } from './components/snackbars/update-status/update-status.component';
+import { ActuatorListComponentComponent } from './components/actuator-list-component/actuator-list-component.component';
 
 
 export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
@@ -61,6 +62,7 @@ export const MQTT_SERVICE_OPTIONS: IMqttServiceOptions = {
     WindowControlComponent,
     HeatingControlComponent,
     UpdateStatusComponent,
+    ActuatorListComponentComponent,
   ],
   imports: [
     BrowserModule,

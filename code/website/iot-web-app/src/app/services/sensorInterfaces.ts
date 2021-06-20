@@ -1,7 +1,7 @@
 export interface Actuator {
     type: string,
     location: string,
-    status: string | null,
+    status: string | null | number,
     setting: string
 }
 
@@ -17,16 +17,16 @@ export interface Blind extends Actuator{
 }
 
 export interface Heater extends Actuator{
-    status: string,
-    setting: string,
+    status: number,
     //when heating is set to manual
-    power?: number;
+    power: number;
 }
 
 export interface Sensor{
     //what kind of sensor is it?
     type: string;
     location: string;
+    value: any;
 }
 
 export interface StatusUpdate {

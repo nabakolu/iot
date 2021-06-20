@@ -5,6 +5,6 @@
     <ng-container *ngFor="let actuator of dataServiceInstance.actuators | keyvalue">
       <app-window-control *ngIf="actuator.value.has('windows')" [windowLoc]="actuator.key"></app-window-control>
     </ng-container>
-      <app-heating-control></app-heating-control>
+    <app-heating-control></app-heating-control>
   </div>
 </div>

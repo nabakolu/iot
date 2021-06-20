@@ -27,21 +27,38 @@ export class DataService {
 
   //subject to process actuator messages synchronously
   private actuatorQueue = new Subject<IMqttMessage>();
+  //subject to process actuator messages synchronously
+  private sensorQueue = new Subject<IMqttMessage>();
 
   //mqtt topics for customize component
   private readonly prefCoValTopic = "CoValuePreference";
   private readonly prefTempValTopic = "TempValuePreference";
   private readonly ambientNoiseThTopic = "ambientNPreference";
   private readonly lightSenseTopic = "lightSensePreference";
-  //mqtt topic for status updates
+  //mqtt topic for actuators (windows, blind)
   private readonly actuatorTopic = "/actuators/+/+/+";
+  private readonly heatingTopic = "/actuators/+/+";
+  //mqtt topic for sensors --> display in list with connected sensors
+  private readonly sensorTopic = "/sensors/#";
 
-  //connected actuators
+  //connected actuators (windows, blinds)
   public actuators: Map<string, Map<string, Actuator>> = new Map();
+  //connected heater
+  public heater: Heater = {type: "heater", location: "CentralHeatingElem", status: 0, setting: "auto", power: 0};
+  public insideTemp?: number = undefined;
+  public outsideTemp?: number = undefined;
+  //all connected actuators as list to display in actuator tab as list
+  public actuatorList: Array<Actuator> = [];
+  public actuatorList$: BehaviorSubject<Array<Actuator>> = new BehaviorSubject<Array<Actuator>>([]);
+  //sensors
+  public sensors: Map<Array<String>, Sensor> = new Map();
+  public sensorList: Array<Sensor> = [];
+  public sensorList$: BehaviorSubject<Array<Sensor>> = new BehaviorSubject<Array<Sensor>>([]);
 
   constructor(private _mqttService: MqttService, private _snackBar: MatSnackBar) {
     console.log("Data service constructor running")
     this.processActuatorMessages();
+    this.processSensorMessages();
     this.setup_mqtt_observers();
   }
 
@@ -51,36 +68,99 @@ export class DataService {
     this.setupTempObserver();
     this.setupAmbientNoiseObserver();
     this.setupLightSenseObserver();
-    //dashboard component
+    //dashboard component + actuator list component
     this.setupActuators();
+    //sensor list component + temperature information
+    this.setupSensors();
+  }
+
+  setupSensors(){
+    this._mqttService.observe(this.sensorTopic).subscribe(msg => {
+      this.sensorQueue.next(msg);
+    })
   }
 
   setupActuators(){
     this._mqttService.observe(this.actuatorTopic).subscribe(msg => {
       this.actuatorQueue.next(msg);
-    })
+    });
+    this._mqttService.observe(this.heatingTopic).subscribe(msg => {
+      this.actuatorQueue.next(msg);
+    });
+  }
+
+  processSensorMessages(){
+    this.sensorQueue.pipe(concatMap(msg => of(msg))).subscribe((msg) => {
+      let topicParts = msg.topic.split("/");
+      let sensorType: string = topicParts[2], location: string = topicParts[3]
+      if(sensorType == "temperature"){
+        if(location == "inside"){
+          this.insideTemp = Number(msg.payload.toString());
+        }
+        if(location == "outside"){
+          this.outsideTemp = Number(msg.payload.toString());
+        }
+      }
+      let sensor: Sensor = {location: location, type: sensorType, value: msg.payload.toString()};
+      this.sensors.set([location, sensorType], sensor);
+      this.updateSensorList();
+    });
+  }
+
+  updateSensorList(){
+    let tempSensList: Array<Sensor> = [];
+    //get all actuators (windows, blinds)
+    this.sensors.forEach((sensor, key) => {
+      tempSensList.push(sensor)
+    });
+    this.sensorList.length = 0;
+    Array.prototype.push.apply(this.sensorList, tempSensList);
+    this.sensorList$.next(tempSensList);
   }
 
   processActuatorMessages(){
     this.actuatorQueue.pipe(concatMap(msg => of(msg))).subscribe((msg) => {
       let topicParts = msg.topic.split("/");
       let actuatorType: string = topicParts[2], location: string = topicParts[3], msgType: string=topicParts[4];
-      this.updateActuators(location, actuatorType);
-      let statusUpdate: StatusUpdate = {actuatorType: actuatorType, location: location, msg: msg.payload.toString()};
-      switch(msgType){
-        case "status":
-          this.processActuatorStatusUpdates(statusUpdate);
-          break;
-        case "command":
-          console.log("command message arr")
-          break;
-        case "mode":
-          console.log("mode message arr")
-          this.processModeUpdates(statusUpdate);
-          break;
-        default:
-          console.warn("Actuator message with unknown topic arrived: ", msgType)
+      //for heaters
+      if(actuatorType=="heating"){
+        switch(location){
+          case "status":
+            this.heater.status = Number(msg.payload.toString())
+            break;
+          case "command":
+            console.log("command message arr")
+            break;
+          case "mode":
+            this.heater.setting = msg.payload.toString();
+            break;
+          case "power":
+            this.heater.power = Number(msg.payload.toString())
+            break;
+          default:
+            console.warn("Actuator heating message with unknown topic arrived: ", msgType)
+        }
       }
+      //other actuators
+      else{
+        this.updateActuators(location, actuatorType);
+        let statusUpdate: StatusUpdate = {actuatorType: actuatorType, location: location, msg: msg.payload.toString()};
+        switch(msgType){
+          case "status":
+            this.processActuatorStatusUpdates(statusUpdate);
+            break;
+          case "command":
+            console.log("command message arr")
+            break;
+          case "mode":
+            console.log("mode message arr")
+            this.processModeUpdates(statusUpdate);
+            break;
+          default:
+            console.warn("Actuator message with unknown topic arrived: ", msgType)
+        }
+      }
+      this.updateActuatorList();
     });
   }
 
@@ -89,7 +169,6 @@ export class DataService {
   }
 
   updateActuators(location: string, type: string){
-    console.warn("exec status update:", location, type)
     //check if location already exists if not add location
     if(!this.actuators.has(location)){
       this.actuators.set(location, new Map());
@@ -99,6 +178,22 @@ export class DataService {
       let actuator: Actuator = {type: type, location: location, setting: "auto", status: null}
       this.actuators.get(location)?.set(type, actuator)
     }
+  }
+
+  updateActuatorList(){
+    let tempActList: Actuator[] = [];
+    //get all actuators (windows, blinds)
+    this.actuators.forEach((actTypeMap, location) => {
+        console.log(actTypeMap, location)
+        actTypeMap.forEach((actuator, type) =>
+        {
+          tempActList.push(actuator);
+        })
+    })
+    tempActList.push(this.heater);
+    this.actuatorList.length = 0;
+    Array.prototype.push.apply(this.actuatorList, tempActList);
+    this.actuatorList$.next(tempActList);
   }
 
   setupCoObserver(){

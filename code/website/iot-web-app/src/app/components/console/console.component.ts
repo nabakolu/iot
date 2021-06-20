@@ -34,8 +34,6 @@ export class ConsoleComponent implements OnInit {
 
   consoleArrowNavigation(direction: string){
     let comp = this;
-    console.warn("im working:", direction, ":::", this.indexInMemory)
-    console.warn(this.commandMemory)
     if (direction === "up"){
       if (this.commandMemory.length > this.indexInMemory+1){
         this.commandMemory[this.indexInMemory] = this.consoleInput == "\n"? "": this.consoleInput;
@@ -99,6 +97,8 @@ Available commands are:
       example: changewindow -north_lower -status -open
   -changeblind -[location] -[change] -[msg]
       example: changeblind -north_lower -status -open
+  -mocksensor -[sensorType] -[location] -[value]
+      example: mocksensor -temperature -north_lower -45.3
   `
     }
     else if (command.toLowerCase().startsWith("mqtt")){
@@ -111,14 +111,20 @@ Available commands are:
     else if (command.toLowerCase().startsWith("mockwinblin")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
-      this.dataServiceInstance.publishMQTT("/actuators/windows/" +location +"/mock", "", false);
-      this.dataServiceInstance.publishMQTT("/actuators/blinds/" +location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("/actuators/windows/" + location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("/actuators/blinds/" + location +"/mock", "", false);
       return "Created temporary blank window and blind with location: " + location
     }
     else if (command.toLowerCase().startsWith("mockwindow")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
-      this.dataServiceInstance.publishMQTT("/actuators/windows/" +location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("/actuators/windows/" + location +"/mock", "", false);
+      return "Created temporary blank window with location: " + location
+    }
+    else if (command.toLowerCase().startsWith("mockheating")){
+      let cmdParts: Array<string> = command.split("-")
+      let location: string = cmdParts[1].trim()
+      this.dataServiceInstance.publishMQTT("/actuators/heating/" + location +"/mock", "", false);
       return "Created temporary blank window with location: " + location
     }
     else if (command.toLowerCase().startsWith("changewindow")){
@@ -128,6 +134,14 @@ Available commands are:
       let msg: string = cmdParts[3].trim()
       this.dataServiceInstance.publishMQTT("/actuators/windows/" +location +"/" + change, msg, false);
       return "Change applied for window with location: " + location
+    }
+    else if (command.toLowerCase().startsWith("mocksensor")){
+      let cmdParts: Array<string> = command.split("-")
+      let sensortype: string = cmdParts[1].trim()
+      let location: string = cmdParts[2].trim()
+      let msg: string = cmdParts[3].trim()
+      this.dataServiceInstance.publishMQTT("/sensors/" + sensortype + "/" + location, msg, false);
+      return "Mocked sensor with message: " + "/sensors/" + sensortype + "/" + location
     }
     else if (command.toLowerCase().startsWith("changeblind")){
       let cmdParts: Array<string> = command.split("-")

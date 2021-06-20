@@ -3,19 +3,20 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
-import { Sensor } from 'src/app/services/sensorInterfaces';
+import { Actuator } from 'src/app/services/sensorInterfaces';
+
 
 /**
- * Data source for the SensorListComponent view. This class should
+ * Data source for the ActuatorListComponent view. This class should
  * encapsulate all logic for fetching and manipulating the displayed data
  * (including sorting, pagination, and filtering).
  */
-export class SensorListComponentDataSource extends DataSource<Sensor> {
-  data: Array<Sensor> = [];
+export class ActuatorListComponentDataSource extends DataSource<Actuator> {
+  data: Actuator[] = [];
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
 
-  constructor(data: Array<Sensor>) {
+  constructor(data: Array<Actuator>) {
     super();
     this.data = data;
   }
@@ -25,7 +26,7 @@ export class SensorListComponentDataSource extends DataSource<Sensor> {
    * the returned stream emits new items.
    * @returns A stream of the items to be rendered.
    */
-  connect(): Observable<Array<Sensor>> {
+  connect(): Observable<Actuator[]> {
     if (this.paginator && this.sort) {
       // Combine everything that affects the rendered data into one update
       // stream for the data-table to consume.
@@ -48,7 +49,7 @@ export class SensorListComponentDataSource extends DataSource<Sensor> {
    * Paginate the data (client-side). If you're using server-side pagination,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getPagedData(data: Array<Sensor>): Array<Sensor> {
+  private getPagedData(data: Actuator[]): Actuator[] {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       return data.splice(startIndex, this.paginator.pageSize);
@@ -61,7 +62,7 @@ export class SensorListComponentDataSource extends DataSource<Sensor> {
    * Sort the data (client-side). If you're using server-side sorting,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getSortedData(data: Array<Sensor>): Array<Sensor> {
+  private getSortedData(data: Actuator[]): Actuator[] {
     if (!this.sort || !this.sort.active || this.sort.direction === '') {
       return data;
     }
@@ -69,9 +70,8 @@ export class SensorListComponentDataSource extends DataSource<Sensor> {
     return data.sort((a, b) => {
       const isAsc = this.sort?.direction === 'asc';
       switch (this.sort?.active) {
-        case 'type': return compare(a.type, b.location, isAsc);
+        case 'type': return compare(a.type, b.type, isAsc);
         case 'location': return compare(a.location, b.location, isAsc);
-        case 'value': return compare(a.value, b.value, isAsc);
         default: return 0;
       }
     });
