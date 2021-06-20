@@ -4,7 +4,7 @@
     </div>
     <mat-card-header>
         <mat-card-title>
-            Window Control: Example Window 1
+            Window Control: dfd
             <button mat-icon-button class="card-info-button" 
             matTooltip="Configuration for the operating mode of the window and its associated blind. Also shows current state that the window and the blind are in.">
                 <mat-icon>info</mat-icon>
@@ -15,7 +15,9 @@
 
     <mat-card-content class="window-control-card-content">
         <div class="current-window-state-container">Current state of window is:&nbsp;
-            <span class="curr-window-state-indicator closed">closed</span>
+            <span class="curr-window-state-indicator closed">
+                {{(windowstate && windowstate.status) ? windowstate.status : "?????"}}
+            </span>
         </div>
         <div class="window-control-options-container">
             <p class="window-control-button-title">Control window:</p>
