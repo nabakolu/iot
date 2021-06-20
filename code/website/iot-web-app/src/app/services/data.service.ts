@@ -1,14 +1,17 @@
 import { Injectable } from '@angular/core';
 import { io } from "socket.io-client";
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import * as Rx from 'rxjs';
 import {
+  IMqttMessage,
   MqttService
 } from 'ngx-mqtt';
-import { catchError, debounceTime, distinctUntilChanged, filter, map } from 'rxjs/operators';
+import { catchError, concatMap, debounceTime, distinctUntilChanged, filter, map, observeOn, tap } from 'rxjs/operators';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdateStatusComponent } from '../components/snackbars/update-status/update-status.component';
 import { Subject } from 'rxjs';
+import {Window, Heater, Sensor, StatusUpdate, Actuator} from './sensorInterfaces';
+import { queueScheduler } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -22,14 +25,24 @@ export class DataService {
   public ambientNoisePref$: BehaviorSubject<any> = new BehaviorSubject<any>("mid");
   public lightSensPref$: BehaviorSubject<any> = new BehaviorSubject<any>("mid");
 
+  //subject to process actuator messages synchronously
+  private actuatorQueue = new Subject<IMqttMessage>();
+
+  //mqtt topics for customize component
   private readonly prefCoValTopic = "CoValuePreference";
   private readonly prefTempValTopic = "TempValuePreference";
   private readonly ambientNoiseThTopic = "ambientNPreference";
   private readonly lightSenseTopic = "lightSensePreference";
+  //mqtt topic for status updates
+  private readonly actuatorTopic = "/actuators/+/+/+";
+
+  //connected actuators
+  public actuators: Map<string, Map<string, Actuator>> = new Map();
 
   constructor(private _mqttService: MqttService, private _snackBar: MatSnackBar) {
     console.log("Data service constructor running")
-    this.setup_mqtt_observers()
+    this.processActuatorMessages();
+    this.setup_mqtt_observers();
   }
 
   setup_mqtt_observers(){
@@ -38,6 +51,54 @@ export class DataService {
     this.setupTempObserver();
     this.setupAmbientNoiseObserver();
     this.setupLightSenseObserver();
+    //dashboard component
+    this.setupActuators();
+  }
+
+  setupActuators(){
+    this._mqttService.observe(this.actuatorTopic).subscribe(msg => {
+      this.actuatorQueue.next(msg);
+    })
+  }
+
+  processActuatorMessages(){
+    this.actuatorQueue.pipe(concatMap(msg => of(msg))).subscribe((msg) => {
+      let topicParts = msg.topic.split("/");
+      let actuatorType: string = topicParts[2], location: string = topicParts[3], msgType: string=topicParts[4];
+      this.updateActuators(location, actuatorType);
+      let statusUpdate: StatusUpdate = {actuatorType: actuatorType, location: location, msg: msg.payload.toString()};
+      switch(msgType){
+        case "status":
+          this.processActuatorStatusUpdates(statusUpdate);
+          break;
+        case "command":
+          console.log("command message arr")
+          break;
+        case "mode":
+          console.log("mode message arr")
+          this.processModeUpdates(statusUpdate);
+          break;
+        default:
+          console.warn("Actuator message with unknown topic arrived: ", msgType)
+      }
+    });
+  }
+
+  processModeUpdates(statusUpdate: StatusUpdate){
+    this.actuators.get(statusUpdate.location)!.get(statusUpdate.actuatorType)!.setting = statusUpdate.msg;
+  }
+
+  updateActuators(location: string, type: string){
+    console.warn("exec status update:", location, type)
+    //check if location already exists if not add location
+    if(!this.actuators.has(location)){
+      this.actuators.set(location, new Map());
+    }
+    //check if sensor type for location already exists if not add sensor type
+    if(!this.actuators.get(location)!.has(type)){
+      let actuator: Actuator = {type: type, location: location, setting: "auto", status: null}
+      this.actuators.get(location)?.set(type, actuator)
+    }
   }
 
   setupCoObserver(){
@@ -89,6 +150,9 @@ export class DataService {
     // })
   }
 
+  processActuatorStatusUpdates(statusUpdate: StatusUpdate){
+    this.actuators.get(statusUpdate.location)!.get(statusUpdate.actuatorType)!.status = statusUpdate.msg;
+  }
 
   publishMQTT(topic: string, message: string, retain: boolean) {
     this._mqttService.unsafePublish(topic, message, { qos: 1, retain: false });
