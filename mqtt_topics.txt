@@ -1,4 +1,4 @@
-sensors/tempreature/[inside/outside]
+sensors/temperature/[inside/outside]
 	   /CO2/[inside/outside]
 	   /noise/[location]
 	   /wind/[location]
