@@ -1,9 +1,9 @@
-sensors/tempreature/[location]
-	   /rain/[location]
-	   /CO2/[location]
+sensors/tempreature/[inside/outside]
+	   /CO2/[inside/outside]
 	   /noise/[location]
 	   /wind/[location]
 	   /sun/[location]
+	   /rain
 
 actuators/windows/[location]/command
 							/status --> [open, closed]
@@ -11,6 +11,6 @@ actuators/windows/[location]/command
 		 /blinds/[location]/command
 		 				   /status --> [open, closed]
 						   /mode --> [auto, open, close]
-		 /heating/[location]/command
+		 /heating/command
 		 					/status --> 0-100 //percentage of maximal heating power
 							/mode --> [auto, manual]
