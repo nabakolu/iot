@@ -57,7 +57,7 @@ export class HeatingControlComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(result => {
       console.log("changing window mode for heater on server to:", result)
-      this._mqttService.publish("/actuators/heating/mode", result, { qos: 1, retain: true }).subscribe(
+      this._mqttService.publish("actuators/heating/mode", result, { qos: 1, retain: true }).subscribe(
         () => { },
         () => { this.dataServiceInstance.showUpdateSnackbar("Failed to change heating mode to: " + result, false) },
         () => { this.dataServiceInstance.showUpdateSnackbar("Successfully updated heating mode to " + result, true) }
@@ -71,7 +71,7 @@ export class HeatingControlComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(result => {
       console.log("changing window mode for heater on server to:", result)
-      this._mqttService.publish("/actuators/heating/power", String(result), { qos: 1, retain: true }).subscribe(
+      this._mqttService.publish("actuators/heating/power", String(result), { qos: 1, retain: true }).subscribe(
         () => { },
         () => { this.dataServiceInstance.showUpdateSnackbar("Failed to change heating mode to: " + result, false) },
         () => { this.dataServiceInstance.showUpdateSnackbar("Successfully updated heating power to " + result + "% power", true) }

@@ -36,10 +36,10 @@ export class DataService {
   private readonly ambientNoiseThTopic = "ambientNPreference";
   private readonly lightSenseTopic = "lightSensePreference";
   //mqtt topic for actuators (windows, blind)
-  private readonly actuatorTopic = "/actuators/+/+/+";
-  private readonly heatingTopic = "/actuators/+/+";
+  private readonly actuatorTopic = "actuators/+/+/+";
+  private readonly heatingTopic = "actuators/+/+";
   //mqtt topic for sensors --> display in list with connected sensors
-  private readonly sensorTopic = "/sensors/#";
+  private readonly sensorTopic = "sensors/#";
 
   //connected actuators (windows, blinds)
   public actuators: Map<string, Map<string, Actuator>> = new Map();
@@ -92,7 +92,7 @@ export class DataService {
   processSensorMessages(){
     this.sensorQueue.pipe(concatMap(msg => of(msg))).subscribe((msg) => {
       let topicParts = msg.topic.split("/");
-      let sensorType: string = topicParts[2], location: string = topicParts[3]
+      let sensorType: string = topicParts[1], location: string = topicParts[2]
       if(sensorType == "temperature"){
         if(location == "inside"){
           this.insideTemp = Number(msg.payload.toString());
@@ -121,7 +121,7 @@ export class DataService {
   processActuatorMessages(){
     this.actuatorQueue.pipe(concatMap(msg => of(msg))).subscribe((msg) => {
       let topicParts = msg.topic.split("/");
-      let actuatorType: string = topicParts[2], location: string = topicParts[3], msgType: string=topicParts[4];
+      let actuatorType: string = topicParts[1], location: string = topicParts[2], msgType: string=topicParts[3];
       //for heaters
       if(actuatorType=="heating"){
         switch(location){

@@ -111,20 +111,20 @@ Available commands are:
     else if (command.toLowerCase().startsWith("mockwinblin")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
-      this.dataServiceInstance.publishMQTT("/actuators/windows/" + location +"/mock", "", false);
-      this.dataServiceInstance.publishMQTT("/actuators/blinds/" + location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" + location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("actuators/blinds/" + location +"/mock", "", false);
       return "Created temporary blank window and blind with location: " + location
     }
     else if (command.toLowerCase().startsWith("mockwindow")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
-      this.dataServiceInstance.publishMQTT("/actuators/windows/" + location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" + location +"/mock", "", false);
       return "Created temporary blank window with location: " + location
     }
     else if (command.toLowerCase().startsWith("mockheating")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
-      this.dataServiceInstance.publishMQTT("/actuators/heating/" + location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("actuators/heating/" + location +"/mock", "", false);
       return "Created temporary blank window with location: " + location
     }
     else if (command.toLowerCase().startsWith("changewindow")){
@@ -132,7 +132,7 @@ Available commands are:
       let location: string = cmdParts[1].trim()
       let change: string = cmdParts[2].trim()
       let msg: string = cmdParts[3].trim()
-      this.dataServiceInstance.publishMQTT("/actuators/windows/" +location +"/" + change, msg, false);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" +location +"/" + change, msg, false);
       return "Change applied for window with location: " + location
     }
     else if (command.toLowerCase().startsWith("mocksensor")){
@@ -140,7 +140,7 @@ Available commands are:
       let sensortype: string = cmdParts[1].trim()
       let location: string = cmdParts[2].trim()
       let msg: string = cmdParts[3].trim()
-      this.dataServiceInstance.publishMQTT("/sensors/" + sensortype + "/" + location, msg, false);
+      this.dataServiceInstance.publishMQTT("sensors/" + sensortype + "/" + location, msg, false);
       return "Mocked sensor with message: " + "/sensors/" + sensortype + "/" + location
     }
     else if (command.toLowerCase().startsWith("changeblind")){
@@ -148,7 +148,7 @@ Available commands are:
       let location: string = cmdParts[1].trim()
       let change: string = cmdParts[2].trim()
       let msg: string = cmdParts[3].trim()
-      this.dataServiceInstance.publishMQTT("/actuators/blinds/" +location +"/" + change, msg, false);
+      this.dataServiceInstance.publishMQTT("actuators/blinds/" +location +"/" + change, msg, false);
       return "Change applied for blind with location: " + location
     }
     else{
