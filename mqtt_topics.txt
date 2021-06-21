@@ -1,9 +1,9 @@
 sensors/temperature/[inside/outside]
-	   /CO2/[inside/outside]
 	   /noise/[location]
 	   /wind/[location]
 	   /sun/[location]
 	   /rain
+	   /CO2
 
 actuators/windows/[location]/command
 							/status --> [open, closed]
