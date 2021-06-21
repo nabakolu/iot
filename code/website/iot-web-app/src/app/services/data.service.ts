@@ -51,7 +51,7 @@ export class DataService {
   public actuatorList: Array<Actuator> = [];
   public actuatorList$: BehaviorSubject<Array<Actuator>> = new BehaviorSubject<Array<Actuator>>([]);
   //sensors
-  public sensors: Map<Array<String>, Sensor> = new Map();
+  public sensors: Map<String, Sensor> = new Map();
   public sensorList: Array<Sensor> = [];
   public sensorList$: BehaviorSubject<Array<Sensor>> = new BehaviorSubject<Array<Sensor>>([]);
 
@@ -102,7 +102,7 @@ export class DataService {
         }
       }
       let sensor: Sensor = {location: location, type: sensorType, value: msg.payload.toString()};
-      this.sensors.set([location, sensorType], sensor);
+      this.sensors.set(JSON.stringify([location, sensorType]), sensor);
       this.updateSensorList();
     });
   }
@@ -184,7 +184,6 @@ export class DataService {
     let tempActList: Actuator[] = [];
     //get all actuators (windows, blinds)
     this.actuators.forEach((actTypeMap, location) => {
-        console.log(actTypeMap, location)
         actTypeMap.forEach((actuator, type) =>
         {
           tempActList.push(actuator);
