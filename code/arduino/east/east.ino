@@ -8,6 +8,11 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+#define window_pin D1
+#define blinds_pin D8
+#define light_pin A0
+
+
 const char* ssid = "test"; // WiFi name
 const char* password =  "12345678"; // WiFi password
 const char* mqttServer = "82.165.70.137"; // mqtt broker ip
@@ -25,31 +30,31 @@ bool blinds_auto = true; //specifies, if messages send from AI planning are to b
 WiFiClient espClient; // WiFiClient to connect and use WiFi
 PubSubClient mqtt(espClient); // mqtt client
 
-// closes the window and sens appropriate status message to mqtt broker
+// closes the window and sens appropriate retained status message to mqtt broker
 void close_window(){
 	window.write(0);
-	mqtt.publish("actuators/windows/east/status", "closed");
+	mqtt.publish("actuators/windows/east/status", "closed", true);
 }
 
 
-// opens the window and sens appropriate status message to mqtt broker
+// opens the window and sens appropriate retained status message to mqtt broker
 void open_window(){
 	window.write(180);
-	mqtt.publish("actuators/windows/east/status", "open");
+	mqtt.publish("actuators/windows/east/status", "open", true);
 }
 
 
-// closes the blinds and sens appropriate status message to mqtt broker
+// closes the blinds and sens appropriate retained status message to mqtt broker
 void close_blinds(){
 	blinds.write(0);
-	mqtt.publish("actuators/blinds/east/status", "closed");
+	mqtt.publish("actuators/blinds/east/status", "closed", true);
 }
 
 
-// opens the blinds and sens appropriate status message to mqtt broker
+// opens the blinds and sens appropriate retained status message to mqtt broker
 void open_blinds(){
 	blinds.write(180);
-	mqtt.publish("actuators/blinds/east/status", "open");
+	mqtt.publish("actuators/blinds/east/status", "open", true);
 }
 
 
@@ -90,8 +95,8 @@ void setup() {
 
 
 
-	window.attach(D8);
-	blinds.attach(D1);
+	window.attach(window_pin);
+	blinds.attach(blinds_pin);
 
 
 	close_window();
@@ -151,4 +156,5 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void loop() {
 	mqtt.loop();
+	mqtt.publish("sensors/sun/east", itoa(analogRead(light_pin), NULL, 10), true);
 }
