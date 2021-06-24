@@ -46,7 +46,7 @@ export class WindowControlComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(result => {
       console.log("changing window mode for " + this.windowLoc + " on server to:", result)
-      this._mqttService.publish("actuators/windows/" + this.windowLoc + "/mode", result, { qos: 1, retain: false }).subscribe(
+      this._mqttService.publish("actuators/windows/" + this.windowLoc + "/mode", result, { qos: 1, retain: true }).subscribe(
         () => { },
         () => { this.dataServiceInstance.showUpdateSnackbar("Changing window mode failed for location: " + this.windowLoc, false) },
         () => { this.dataServiceInstance.showUpdateSnackbar("Successfully updated window mode for location '" + this.windowLoc + "' to " + result, true) }
@@ -60,7 +60,7 @@ export class WindowControlComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(result => {
       console.log("changing blind mode " + this.windowLoc + " on server to:", result)
-      this._mqttService.publish("actuators/blinds/" + this.windowLoc + "/mode", result, { qos: 1, retain: false }).subscribe(
+      this._mqttService.publish("actuators/blinds/" + this.windowLoc + "/mode", result, { qos: 1, retain: true }).subscribe(
         () => { },
         () => { this.dataServiceInstance.showUpdateSnackbar("Changing blind mode failed for location: " + this.windowLoc, false) },
         () => { this.dataServiceInstance.showUpdateSnackbar("Successfully updated blind mode for location '" + this.windowLoc + "' to " + result, true) }

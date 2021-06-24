@@ -10,7 +10,7 @@ import { catchError, concatMap, debounceTime, distinctUntilChanged, filter, map,
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UpdateStatusComponent } from '../components/snackbars/update-status/update-status.component';
 import { Subject } from 'rxjs';
-import {Window, Heater, Sensor, StatusUpdate, Actuator} from './sensorInterfaces';
+import {Heater, Sensor, StatusUpdate, Actuator} from './sensorInterfaces';
 import { queueScheduler } from 'rxjs';
 
 @Injectable({
@@ -95,14 +95,33 @@ export class DataService {
       let sensorType: string = topicParts[1], location: string = topicParts[2]
       if(sensorType == "temperature"){
         if(location == "inside"){
-          this.insideTemp = Number(msg.payload.toString());
+          //empty payload --> remove val
+          if(msg.payload.toString() == ""){
+            this.insideTemp = undefined;
+          }
+          //not empty --> update temp
+          else{
+            this.insideTemp = Number(msg.payload.toString());
+          }
         }
         if(location == "outside"){
-          this.outsideTemp = Number(msg.payload.toString());
+          //empty payload --> remove val
+          if(msg.payload.toString() == ""){
+            this.outsideTemp = undefined;
+          }
+          //not empty --> update temp
+          else{
+            this.outsideTemp = Number(msg.payload.toString());
+          }
         }
       }
-      let sensor: Sensor = {location: location, type: sensorType, value: msg.payload.toString()};
-      this.sensors.set(JSON.stringify([location, sensorType]), sensor);
+      if(msg.payload.toString() == ""){
+        this.sensors.delete(JSON.stringify([location, sensorType]))
+      }
+      else{
+        let sensor: Sensor = {location: location, type: sensorType, value: msg.payload.toString()};
+        this.sensors.set(JSON.stringify([location, sensorType]), sensor);
+      }
       this.updateSensorList();
     });
   }
@@ -124,6 +143,7 @@ export class DataService {
       let actuatorType: string = topicParts[1], location: string = topicParts[2], msgType: string=topicParts[3];
       //for heaters
       if(actuatorType=="heating"){
+        //since the central heating has no location location contains the msgType
         switch(location){
           case "status":
             this.heater.status = Number(msg.payload.toString())
@@ -145,19 +165,24 @@ export class DataService {
       else{
         this.updateActuators(location, actuatorType);
         let statusUpdate: StatusUpdate = {actuatorType: actuatorType, location: location, msg: msg.payload.toString()};
-        switch(msgType){
-          case "status":
-            this.processActuatorStatusUpdates(statusUpdate);
-            break;
-          case "command":
-            console.log("command message arr")
-            break;
-          case "mode":
-            console.log("mode message arr")
-            this.processModeUpdates(statusUpdate);
-            break;
-          default:
-            console.warn("Actuator message with unknown topic arrived: ", msgType)
+        if(statusUpdate.msg == ""){
+          this.actuators.get(location)?.delete(statusUpdate.actuatorType)
+        }
+        else{
+          switch(msgType){
+            case "status":
+              this.processActuatorStatusUpdates(statusUpdate);
+              break;
+            case "command":
+              console.log("command message arr")
+              break;
+            case "mode":
+              console.log("mode message arr")
+              this.processModeUpdates(statusUpdate);
+              break;
+            default:
+              console.warn("Actuator message with unknown topic arrived: ", msgType)
+          }
         }
       }
       this.updateActuatorList();
@@ -249,7 +274,7 @@ export class DataService {
   }
 
   publishMQTT(topic: string, message: string, retain: boolean) {
-    this._mqttService.unsafePublish(topic, message, { qos: 1, retain: false });
+    this._mqttService.unsafePublish(topic, message, { qos: 1, retain: retain });
   }
 
   updateCoPreferenceMQTT(value$: Observable<number>) {

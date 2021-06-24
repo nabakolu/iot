@@ -99,6 +99,9 @@ Available commands are:
       example: changeblind -north_lower -status -open
   -mocksensor -[sensorType] -[location] -[value]
       example: mocksensor -temperature -north_lower -45.3
+  -removelocation -[location]
+      desc: removes all actuators connected to a location (actuators will be automatically added again if new message comes in)
+      example: removelocation -north_lower
   `
     }
     else if (command.toLowerCase().startsWith("mqtt")){
@@ -118,13 +121,13 @@ Available commands are:
     else if (command.toLowerCase().startsWith("mockwindow")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
-      this.dataServiceInstance.publishMQTT("actuators/windows/" + location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" + location +"/mock", " ", true);
       return "Created temporary blank window with location: " + location
     }
     else if (command.toLowerCase().startsWith("mockheating")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
-      this.dataServiceInstance.publishMQTT("actuators/heating/" + location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("actuators/heating/" + location +"/mock", " ", true);
       return "Created temporary blank window with location: " + location
     }
     else if (command.toLowerCase().startsWith("changewindow")){
@@ -132,7 +135,7 @@ Available commands are:
       let location: string = cmdParts[1].trim()
       let change: string = cmdParts[2].trim()
       let msg: string = cmdParts[3].trim()
-      this.dataServiceInstance.publishMQTT("actuators/windows/" +location +"/" + change, msg, false);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" +location +"/" + change, msg, true);
       return "Change applied for window with location: " + location
     }
     else if (command.toLowerCase().startsWith("mocksensor")){
@@ -148,8 +151,19 @@ Available commands are:
       let location: string = cmdParts[1].trim()
       let change: string = cmdParts[2].trim()
       let msg: string = cmdParts[3].trim()
-      this.dataServiceInstance.publishMQTT("actuators/blinds/" +location +"/" + change, msg, false);
+      this.dataServiceInstance.publishMQTT("actuators/blinds/" +location +"/" + change, msg, true);
       return "Change applied for blind with location: " + location
+    }
+    else if (command.toLowerCase().startsWith("removelocation")){
+      let cmdParts: Array<string> = command.split("-")
+      let location: string = cmdParts[1].trim()
+      this.dataServiceInstance.publishMQTT("actuators/blinds/" +location +"/status", "", true);
+      this.dataServiceInstance.publishMQTT("actuators/blinds/" +location +"/mode", "", true);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" +location +"/status", "", true);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" +location +"/mode", "", true);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" +location +"/mock", "", true);
+      this.dataServiceInstance.publishMQTT("actuators/blinds/" +location +"/mock", "", true);
+      return "Deleted all actuators for location: " + location
     }
     else{
       return "Unrecognized command type 'help' to get an overview of available commands"

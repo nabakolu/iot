@@ -5,17 +5,6 @@ export interface Actuator {
     setting: string
 }
 
-//TODO change status and settings to enum for separate interfaces to make sense
-export interface Window extends Actuator{
-    status: string,
-    setting: string,
-}
-
-export interface Blind extends Actuator{
-    status: string,
-    setting: string,
-}
-
 export interface Heater extends Actuator{
     status: number,
     //when heating is set to manual
