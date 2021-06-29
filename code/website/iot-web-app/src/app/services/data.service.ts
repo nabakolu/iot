@@ -163,12 +163,14 @@ export class DataService {
       }
       //other actuators
       else{
-        this.updateActuators(location, actuatorType);
+        if (msgType === "status") {
+          this.updateActuators(location, actuatorType);
+        }
         let statusUpdate: StatusUpdate = {actuatorType: actuatorType, location: location, msg: msg.payload.toString()};
         if(statusUpdate.msg == ""){
           this.actuators.get(location)?.delete(statusUpdate.actuatorType)
         }
-        else{
+        else if (statusUpdate.msg !== " "){
           switch(msgType){
             case "status":
               this.processActuatorStatusUpdates(statusUpdate);
@@ -189,8 +191,10 @@ export class DataService {
     });
   }
 
-  processModeUpdates(statusUpdate: StatusUpdate){
-    this.actuators.get(statusUpdate.location)!.get(statusUpdate.actuatorType)!.setting = statusUpdate.msg;
+  processModeUpdates(statusUpdate: StatusUpdate) {
+    if (this.actuators.get(statusUpdate.location) && this.actuators.get(statusUpdate.location)!.get(statusUpdate.actuatorType)) {
+      this.actuators.get(statusUpdate.location)!.get(statusUpdate.actuatorType)!.setting = statusUpdate.msg;
+    }
   }
 
   updateActuators(location: string, type: string){
@@ -269,8 +273,10 @@ export class DataService {
     // })
   }
 
-  processActuatorStatusUpdates(statusUpdate: StatusUpdate){
-    this.actuators.get(statusUpdate.location)!.get(statusUpdate.actuatorType)!.status = statusUpdate.msg;
+  processActuatorStatusUpdates(statusUpdate: StatusUpdate) {
+    if (this.actuators.get(statusUpdate.location) && this.actuators.get(statusUpdate.location)!.get(statusUpdate.actuatorType)) {
+      this.actuators.get(statusUpdate.location)!.get(statusUpdate.actuatorType)!.status = statusUpdate.msg;
+    }
   }
 
   publishMQTT(topic: string, message: string, retain: boolean) {

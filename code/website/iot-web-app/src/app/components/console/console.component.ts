@@ -114,8 +114,8 @@ Available commands are:
     else if (command.toLowerCase().startsWith("mockwinblin")){
       let cmdParts: Array<string> = command.split("-")
       let location: string = cmdParts[1].trim()
-      this.dataServiceInstance.publishMQTT("actuators/windows/" + location +"/mock", "", false);
-      this.dataServiceInstance.publishMQTT("actuators/blinds/" + location +"/mock", "", false);
+      this.dataServiceInstance.publishMQTT("actuators/windows/" + location + "/status", " ", true);
+      this.dataServiceInstance.publishMQTT("actuators/blinds/" + location + "/status", " ", true);
       return "Created temporary blank window and blind with location: " + location
     }
     else if (command.toLowerCase().startsWith("mockwindow")){
