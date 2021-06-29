@@ -137,7 +137,9 @@ class TemperatureSensor(Sensor):
             self.value += (self.dataService.outside_temp-self.value)*0.07*tdelta*num_open_win
             #effect of heating
             if self.dataService.heating_power:
-                self.value += (self.max_heater_temp-self.value)*tdelta*0.8*self.dataService.heating_power
+                self.value += (self.max_heater_temp-self.value)*tdelta*0.08*self.dataService.heating_power
+            #range restriction
+            self.value = max(-15, min(self.value, 50))
         self.lastsimulation = dt.datetime.now()
 
     def simulate_outside(self):
