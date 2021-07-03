@@ -125,5 +125,39 @@
                 </mat-card-actions>
             </mat-card>
         </div>
+        <div class="noise-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon>air</mat-icon>
+                    </div>
+                    <mat-card-title>Wind Sensitivity</mat-card-title>
+                    <mat-card-subtitle>Select how sensitive the the system should react to wind</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        Tell the system how sensitive it should react to wind at different window locations. 
+                        The system will take your preference into account, when making its decisions.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Light sensitivity:</p>
+                    <mat-button-toggle-group class="noise-threshold-toggle"
+                    [(ngModel)]="this.selectedWindSenseValue"
+                    (change)="this.onWindSensUserChange($event)"
+                    >
+                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="disabled">
+                            <mat-icon>not_interested</mat-icon>
+                            Disabled</mat-button-toggle>
+                        <mat-button-toggle value="low">Low Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="mid">Moderate Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="high">High Sensitivity</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button class="temp-reset-button"
+                    (click)="setWindSenseToDefault()"
+                    >Default</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
     </div>
 </div>

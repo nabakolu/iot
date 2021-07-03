@@ -60,11 +60,13 @@ export class CustomizeComponent implements OnInit {
   };
   selectedAmbientNoiseValue?: string;
   selectedLightSenseValue?: string;
+  selectedWindSenseValue?: string;
 
   coPreference$: Subject<number> = new Subject<number>();
   tempPreference$: Subject<any> = new Subject<Array<number>>();
   ambientNoisePref$: Subject<any> = new Subject<string>();
   lightSensPref$: Subject<any> = new Subject<string>();
+  windSensPref$: Subject<any> = new Subject<string>();
 
   subscriptions: Array<Subscription> = [];  
 
@@ -90,6 +92,11 @@ export class CustomizeComponent implements OnInit {
     this.subscriptions.push(dataServiceInstance.updateLightSensePreferenceMQTT(this.lightSensPref$.asObservable()));
     //change from server
     this.subscriptions.push(this.dataServiceInstance.lightSensPref$.subscribe(this.onLightSensServerChange.bind(this)));
+    //---- Wind Sensitivity
+    //change from client
+    this.subscriptions.push(dataServiceInstance.updateWindSensePreferenceMQTT(this.windSensPref$.asObservable()));
+    //change from server
+    this.subscriptions.push(this.dataServiceInstance.windSensPref$.subscribe(this.onWindSensServerChange.bind(this)));
   }
 
   ngOnInit(): void {  }
@@ -154,6 +161,19 @@ export class CustomizeComponent implements OnInit {
   setLightSenseToDefault(){
     this.lightSensPref$.next("mid");
     this.selectedLightSenseValue = "mid";
+  }
+
+  onWindSensUserChange(changeEv: any){
+    this.windSensPref$.next(changeEv.value);
+  }
+
+  onWindSensServerChange(message: string){
+    this.selectedWindSenseValue = message;
+  }
+
+  setWindSenseToDefault(){
+    this.windSensPref$.next("mid");
+    this.selectedWindSenseValue = "mid";
   }
 
 }

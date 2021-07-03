@@ -24,6 +24,7 @@ export class DataService {
   public tempPreference$: BehaviorSubject<any> = new BehaviorSubject<any>([17, 23]);
   public ambientNoisePref$: BehaviorSubject<any> = new BehaviorSubject<any>("mid");
   public lightSensPref$: BehaviorSubject<any> = new BehaviorSubject<any>("mid");
+  public windSensPref$: BehaviorSubject<any> = new BehaviorSubject<any>("mid");
 
   //subject to process actuator messages synchronously
   private actuatorQueue = new Subject<IMqttMessage>();
@@ -35,6 +36,7 @@ export class DataService {
   private readonly prefTempValTopic = "TempValuePreference";
   private readonly ambientNoiseThTopic = "ambientNPreference";
   private readonly lightSenseTopic = "lightSensePreference";
+  private readonly windSenseTopic = "windSensePreference";
   //mqtt topic for actuators (windows, blind)
   private readonly actuatorTopic = "actuators/+/+/+";
   private readonly heatingTopic = "actuators/+/+";
@@ -68,6 +70,7 @@ export class DataService {
     this.setupTempObserver();
     this.setupAmbientNoiseObserver();
     this.setupLightSenseObserver();
+    this.setupWindSenseObserver();
     //dashboard component + actuator list component
     this.setupActuators();
     //sensor list component + temperature information
@@ -256,6 +259,14 @@ export class DataService {
     ).subscribe(this.lightSensPref$)
   }
 
+  setupWindSenseObserver(){
+    //ambient noise preferences
+    this._mqttService.observe(this.windSenseTopic).pipe(map(message => JSON.parse(message.payload.toString())),
+    // filter(message => message.id !== this.dataServiceId),
+    map(message => message.data)
+    ).subscribe(this.windSensPref$)
+  }
+
   connect() {
     //websocket
     // console.log("connecting")
@@ -335,6 +346,20 @@ export class DataService {
         () => { },
         () => {this.showUpdateSnackbar("Failed to update light sensitivity preference", false)},
         () => {this.showUpdateSnackbar("Successfully updated light sensitivity preference", true)}
+      );
+    });
+  }
+
+  updateWindSensePreferenceMQTT(value$: Observable<Array<number>>) {
+    return value$.pipe(
+      debounceTime(800),
+      distinctUntilChanged()
+    ).subscribe(result => {
+      console.log("changing wind sense pref on server to:", result)
+      this._mqttService.publish(this.windSenseTopic, JSON.stringify({data: result, id: this.dataServiceId}), { qos: 1, retain: true }).subscribe(
+        () => { },
+        () => {this.showUpdateSnackbar("Failed to update wind sensitivity preference", false)},
+        () => {this.showUpdateSnackbar("Successfully updated wind sensitivity preference", true)}
       );
     });
   }
