@@ -15,3 +15,10 @@ actuators/windows/[location]/command
 		 					/status --> 0-100 //percentage of maximal heating power
 							/mode --> [auto, manual]
 							/power --> 0-100 //the power that should be applied in case of manual mode
+
+//user preferences
+CoValuePreference --> co2 preference int 1-5 with {1: , 2: , 3: , 4: , 5: ,}
+TempValuePreference --> [min, max] //temperature range the user prefers with min and max temperature
+ambientNPreference --> (disabled|low|mid|high)
+lightSensePreference --> (disabled|low|mid|high)
+windSensePreference --> (disabled|low|mid|high)
