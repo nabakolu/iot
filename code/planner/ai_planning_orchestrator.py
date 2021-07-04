@@ -1,5 +1,5 @@
 #%%
-from typing import List
+from typing import List, Union
 import paho.mqtt.client as mqtt
 import uuid
 import json
@@ -16,7 +16,7 @@ class ActuatorState:
     #current operating mode (auto|manual)
     operation_mode: str
     #state the actuator is currently in (open|closed)
-    current_state: str
+    current_state: Union[str,float]
 
 @dataclass
 class Preferences:
@@ -38,11 +38,11 @@ class Preferences:
 
 #used to map preference topics to preference class attributes
 preference_topic_to_value = {
-"CoValuePreference": "co2",
-"TempValuePreference": "temperature",
-"ambientNPreference": "noise",
-"lightSensePreference": "light",
-"windSensePreference": "wind",
+    "CoValuePreference": "co2",
+    "TempValuePreference": "temperature",
+    "ambientNPreference": "noise",
+    "lightSensePreference": "light",
+    "windSensePreference": "wind",
 }
 
 @dataclass
@@ -94,8 +94,7 @@ class DataService:
         self.wind_data: LockedDict[str, SensorState] = LockedDict()
         self.light_data: LockedDict[str, SensorState] = LockedDict()
         #actuator values
-        self.heating_state: str = None
-        self.heating_mode: str = None
+        self.heating_state: ActuatorState = ActuatorState("auto", "off")
         self.windowstates: LockedDict[str, ActuatorState] = LockedDict()
         self.blindstates: LockedDict[str, ActuatorState] = LockedDict()
         #preferences
@@ -113,10 +112,21 @@ class DataService:
         self.__print_sensor_dict("Wind", self.wind_data)
         self.__print_sensor_dict("Light intensity", self.light_data)
         print("------- Actuators -------")
-        print("todo")
+        self.__print_actuators()
         print("------- Preferences -------")
         print(self.preferences)
 
+    def __print_actuators(self):
+        #get and print state of all windows
+        with self.windowstates.dict_lock:
+            for location in self.windowstates:
+                print(f"Window at location '{location}' is in mode: ", self.windowstates[location].operation_mode, "Current state of win is: ", self.windowstates[location].current_state)
+        #get and print state of all blinds
+        with self.blindstates.dict_lock:
+            for location in self.blindstates:
+                print(f"Blind at location '{location}' is in mode: ", self.blindstates[location].operation_mode, "Current state of blind is: ", self.blindstates[location].current_state)
+        print(f"Heating is in mode: ", self.heating_state.operation_mode, "Current state of heating is: ", self.heating_state.current_state)
+        
 
     def __print_sensor_dict(self, name: str, sensor_dict: LockedDict[str, SensorState]):
         #iterate over list of locatins for given sensor
@@ -151,10 +161,50 @@ class DataService:
             self.parse_sensor_msg(topic_parts[1:], payload)
         elif topic_parts[0] == "actuators":
             #message contains actuator information
-            pass
+            self.parse_act_msg(topic_parts[1:], payload)
         else:
             #message contains user preference information
             self.parse_pref_msg(topic_parts[0], payload)
+
+    def parse_act_msg(self, act_topic_parts: str, payload: str):
+        if act_topic_parts[0] == "windows":
+            #handle window msg
+            if act_topic_parts[1] in self.windowstates.keys():
+                #check if message is empty if so remove actuator from list
+                if payload == "":
+                    self.windowstates.pop(act_topic_parts[1])
+                elif act_topic_parts[2] == "status":
+                    #otherwise update value
+                    with self.windowstates.dict_lock:
+                        self.windowstates[act_topic_parts[1]].current_state = payload
+                elif act_topic_parts[2] == "mode":
+                    #otherwise update value
+                    with self.windowstates.dict_lock:
+                        self.windowstates[act_topic_parts[1]].operation_mode = payload
+            elif not payload == "" and act_topic_parts[2] == "status":
+                self.windowstates.update({act_topic_parts[1]: ActuatorState("auto", payload)})
+        elif act_topic_parts[0] == "blinds":
+            #handle window msg
+            if act_topic_parts[1] in self.blindstates.keys():
+                #check if message is empty if so remove actuator from list
+                if payload == "":
+                    self.blindstates.pop(act_topic_parts[1])
+                elif act_topic_parts[2] == "status":
+                    #otherwise update value
+                    with self.blindstates.dict_lock:
+                        self.blindstates[act_topic_parts[1]].current_state = payload
+                elif act_topic_parts[2] == "mode":
+                    #otherwise update value
+                    with self.blindstates.dict_lock:
+                        self.blindstates[act_topic_parts[1]].operation_mode = payload
+            elif not payload == "" and act_topic_parts[2] == "status":
+                self.blindstates.update({act_topic_parts[1]: ActuatorState("auto", payload)})
+        elif act_topic_parts[0] == "heating":
+            #handle heating msg
+            if act_topic_parts[1] == "status":
+                self.heating_state.current_state = float(payload)
+            elif act_topic_parts[1] == "mode":
+                self.heating_state.operation_mode = payload
 
     def parse_pref_msg(self, topic: str, payload: str):
         payload = json.loads(payload)["data"]
@@ -171,7 +221,7 @@ class DataService:
                 else:
                     self.preferences.__dict__[mapped_topic] = payload
 
-    def parse_sensor_msg(self, sensor_topic_parts, payload):
+    def parse_sensor_msg(self, sensor_topic_parts: str, payload: str):
         #case temperature message
         if sensor_topic_parts[0] == "temperature":
             if sensor_topic_parts[1] == "inside":
