@@ -1,10 +1,12 @@
 #%%
+import os
 from typing import List, Union
 import paho.mqtt.client as mqtt
 import uuid
 import json
-from threading import Thread, Lock
+from threading import Thread, Lock, Event, Timer
 from dataclasses import dataclass, field
+import datetime as dt
 
 #thresholds for maximum change that can occur to a value before recalculation is triggered
 CHANGE_THRESHOLDS = {"temperature": 1, "noise": 2, "wind": 1.5, "sun": 0.5, "rain": 0.5}
@@ -21,6 +23,7 @@ class ActuatorState:
 @dataclass
 class Preferences:
     """stores user preferences for ambient influences
+    previous states are not saved, because any change will trigger a planner action
     """
     #preferences for different measurements
     co2: str = None
@@ -59,6 +62,8 @@ class SensorState:
             float: absolute change
         """
         return abs(self.curr_value-self.last_plan_state_value)
+    def change_above_threshold(self, threshold):
+        return self.get_value_change() > threshold
 
 class LockedDict(dict):
     """Prevent the (very unlikely) concurrency errors, that may occur when writing multiple sensor values into a dict at the same time
@@ -84,7 +89,7 @@ class LockedDict(dict):
             return super().get(*args, **kwargs)
 
 class DataService:
-    def __init__(self) -> None:
+    def __init__(self, planmgr) -> None:
         #sensor value
         self.temperature_ins: SensorState = SensorState(None)
         self.temperature_out: SensorState = SensorState(None)
@@ -99,6 +104,11 @@ class DataService:
         self.blindstates: LockedDict[str, ActuatorState] = LockedDict()
         #preferences
         self.preferences = Preferences()
+        #assign manager to service that gets notified about data changes 
+        self.planmgr = planmgr
+        #register this DataService as data source for manager
+        planmgr.registerDataService(self)
+        #initialize mqtt connection and loop
         self.init_mqtt_connection()
 
     def print_state(self):
@@ -208,13 +218,17 @@ class DataService:
 
     def parse_pref_msg(self, topic: str, payload: str):
         payload = json.loads(payload)["data"]
+        #check if topic is a valid preference
         if topic in preference_topic_to_value:
+            #map to local var representing preference
             mapped_topic = preference_topic_to_value[topic]
+            #tempereature is handled separate because it has a different delete state [None, None]
             if mapped_topic == "temperature":
                 if payload == "":
                     self.preferences.__dict__[mapped_topic] = [None, None]
                 else:
                     self.preferences.__dict__[mapped_topic] = payload
+            #handle everything else
             else:
                 if payload == "":
                     self.preferences.__dict__[mapped_topic] = None
@@ -284,20 +298,130 @@ class DataService:
                 self.co2.curr_value = float(payload)
             else:
                 self.co2.curr_value = None
+    
+    def get_windowstates(self):
+        """retrieves all windows that should be considered during planning
 
-class ManagePlanner:
-    """creates problem file for planner and manages when to execute the planenr
+        Returns:
+            dict[str, str]: returns dict with location and current status
+        """
+        windows: dict = dict()
+        #iterate over all windows
+        with self.windowstates.dict_lock:
+            for windowlocation in self.windowstates:
+                #check if window is set to automated mode
+                if self.windowstates[windowlocation].operation_mode == "auto":
+                    #if so add to result
+                    windows[windowlocation] = self.windowstates[windowlocation].current_state
+        return windows
+
+class PlanActionMgr:
+    """creates problem file for planner and manages when to execute the planner
     """
-    def __init__(self) -> None:
-        pass
+    def __init__(self, mtbp_actions: int) -> None:
+        """initializes variables and planner thread 
+        Args:
+            mtbp_actions (int): specify the minimal time between to planning actions in seconds
+        """
+        #min time between planning actions
+        self.mtbp_actions: int = mtbp_actions
+        #last time planner was called init with future value to allow for initialization time
+        self.last_action_time: dt.datetime = dt.datetime.now()+dt.timedelta(seconds=mtbp_actions*0.8)
+        #event used to signal if planning is required
+        self.planning_req: Event = Event()
+        #set event to true to run planner 1 time initially
+        self.planning_req.set()
+        #flag to track if a timer to start planning action as soon as possible has been set 
+        #--> avoid setting multiple timers
+        self.delayed_timer_set: bool = False
+        #lock to sync access to the delayed timer flag
+        self.timer_set_lock: Lock = Lock()
+        #initialize empty data service
+        self.data: DataService = None
+
+    def registerDataService(self, dataS: DataService):
+        #set data service
+        self.data = dataS
+        #allow for init time
+        self.last_action_time: dt.datetime = dt.datetime.now()+dt.timedelta(seconds=self.mtbp_actions*0.8)
+        #start planning loop
+        self.planning_thread = Thread(target=self.planning_loop, daemon=True)
+        self.planning_thread.start()
+
+    def planning_loop(self):
+        print("loop started")
+        #loop forever
+        while True:
+            #wait until a planning action is required --> saves resources
+            self.planning_req.wait()
+            #start with setting last planning action time to now 
+            #do this since there is no gurantee that changes arriving during this planning phase will be reflected in result
+            self.last_action_time = dt.datetime.now()
+            self.planning_req.clear()
+            #create problem for planner
+            self.create_planner_problem()
+
+
+    def notify(self) -> None:
+        """notifies thread that changes have occured and allows planner to plan
+        if the minimal amount of time between planning actions has not passed yet __notify_delayed will be called
+        """
+        #time delta since last action in seconds
+        action_time_delta = (dt.datetime.now-self.last_action_time).total_seconds()
+        #if time passed since last action is bigger than minimum time between actions
+        #AND no timer is set that would trigger planner anyway --> trigger planner
+        if action_time_delta > self.mtbp_actions and not self.checkTimerSet():
+            self.planning_req.set()
+        else:
+            #otherwise trigger planner once it becomes available
+            self.__notify_delayed(abs(action_time_delta - self.mtbp_actions))
+        
+
+    def __notify_delayed(self, delay: float) -> None:
+        """sets time to call notify after delay 
+            makes sure that only one timer may exist at once
+        Args:
+            delay (float): delay until notify call in seconds
+        """
+        with self.timer_set_lock:
+            if self.delayed_timer_set == False:
+                self.setTimer(delay)
+
+    def setTimer(self, delay):
+            t = Timer(delay, self.triggerTimer)
+            t.start()
+            self.delayed_timer_set = True
+
+    def triggerTimer(self):
+        with self.timer_set_lock:
+            self.delayed_timer_set = False
+        self.notify()
+
+    def checkTimerSet(self) -> bool:
+        with self.timer_set_lock:
+            return self.delayed_timer_set
 
     def execute_planner(self):
         self.create_planner_problem()
         #call actual planner and parse output
     
     def create_planner_problem(self):
-        pass
+        dirname, filename = os.path.split(os.path.abspath(__file__))
+        #read in the problem template
+        with open(dirname+"/problem_template.pddl") as f:
+            p_template: str = f.read()
+        #vars used to later on generate problem
+        objects_part: dict = dict()
+        init_part: dict = dict()
+        goal_part: dict = dict()
+        #gather window data
+        windows: dict = self.data.get_windowstates()
+        #begin replacing necessary variables
+        #start with objects
+
+        
 # %%
-data = DataService()
-#%%
+mgr = PlanActionMgr()
+data = DataService(mgr)
+#%% 
 input()
