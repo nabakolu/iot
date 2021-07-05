@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 import datetime as dt
 
 #thresholds for maximum change that can occur to a value before recalculation is triggered
-CHANGE_THRESHOLDS = {"temperature": 1, "noise": 2, "wind": 1.5, "sun": 0.5, "rain": 0.5}
+CHANGE_THRESHOLDS = {"temperature": 1.5, "co2": 40,"noise": 2, "wind": 1.5, "sun": 150, "rain": 0.5}
 
 @dataclass
 class ActuatorState:
@@ -38,6 +38,8 @@ class Preferences:
         for i in ["co2", "light", "noise", "wind", "temperature"]:
             r_str += f"Pref for {i} is: {self.__dict__[i]}\n"
         return r_str
+    def copy(self):
+        return Preferences(self.co2, self.light, self.noise, self.wind, [self.temperature[0], self.temperature[1]])
 
 #used to map preference topics to preference class attributes
 preference_topic_to_value = {
@@ -53,7 +55,7 @@ class SensorState:
     #curr value of sensor
     curr_value: float
     #last value that was given to the planner
-    last_plan_state_value: float = None
+    last_plan_state_value: float = 9999
 
     def get_value_change(self):
         """calculates change of sensor value since the last planning step
@@ -63,7 +65,14 @@ class SensorState:
         """
         return abs(self.curr_value-self.last_plan_state_value)
     def change_above_threshold(self, threshold):
-        return self.get_value_change() > threshold
+        if self.curr_value != None and self.last_plan_state_value != None:
+            return self.get_value_change() > threshold
+        else:
+            return True
+
+    def get_plan_value(self) -> float:
+        r_value, self.last_plan_state_value = self.curr_value, self.curr_value
+        return r_value
 
 class LockedDict(dict):
     """Prevent the (very unlikely) concurrency errors, that may occur when writing multiple sensor values into a dict at the same time
@@ -183,6 +192,8 @@ class DataService:
                 #check if message is empty if so remove actuator from list
                 if payload == "":
                     self.windowstates.pop(act_topic_parts[1])
+                    #if an actuator get deleted --> notify plan manager
+                    self.planmgr.notify()
                 elif act_topic_parts[2] == "status":
                     #otherwise update value
                     with self.windowstates.dict_lock:
@@ -199,6 +210,8 @@ class DataService:
                 #check if message is empty if so remove actuator from list
                 if payload == "":
                     self.blindstates.pop(act_topic_parts[1])
+                    #if an actuator get deleted --> notify plan manager
+                    self.planmgr.notify()
                 elif act_topic_parts[2] == "status":
                     #otherwise update value
                     with self.blindstates.dict_lock:
@@ -234,6 +247,7 @@ class DataService:
                     self.preferences.__dict__[mapped_topic] = None
                 else:
                     self.preferences.__dict__[mapped_topic] = payload
+            self.planmgr.notify()
 
     def parse_sensor_msg(self, sensor_topic_parts: str, payload: str):
         #case temperature message
@@ -241,9 +255,13 @@ class DataService:
             if sensor_topic_parts[1] == "inside":
                 if not payload == "":
                     self.temperature_ins.curr_value = float(payload)
+                    if self.temperature_ins.change_above_threshold(CHANGE_THRESHOLDS["temperature"]):
+                        self.planmgr.notify()
             elif sensor_topic_parts[1] == "outside":
                 if not payload == "":
                     self.temperature_out.curr_value = float(payload)
+                    if self.temperature_out.change_above_threshold(CHANGE_THRESHOLDS["temperature"]):
+                        self.planmgr.notify()
             else:
                 print("Unexpected location part for temperature sensors: ", sensor_topic_parts[1])
         #case noise message
@@ -253,53 +271,79 @@ class DataService:
                 #check if message is empty if so remove sensor from list
                 if payload == "":
                     self.noise_data.pop(sensor_topic_parts[1])
+                    #if a sensor gets deleted --> notify plan manager
+                    self.planmgr.notify()
                 else:
                     #otherwise update value
                     with self.noise_data.dict_lock:
                         self.noise_data[sensor_topic_parts[1]].curr_value = float(payload)
+                        if self.noise_data[sensor_topic_parts[1]].change_above_threshold(CHANGE_THRESHOLDS["noise"]):
+                            self.planmgr.notify()
             elif not payload == "":
                 #add new sensor
                 self.noise_data.update({sensor_topic_parts[1]: SensorState(float(payload), 999)})
+                #if a sensor gets added --> notify plan manager
+                self.planmgr.notify()
         elif sensor_topic_parts[0] == "wind":
             #check if location already stored
             if sensor_topic_parts[1] in self.wind_data.keys():
                 #check if message is empty if so remove sensor from list
                 if payload == "":
                     self.wind_data.pop(sensor_topic_parts[1])
+                    #if a sensor gets deleted --> notify plan manager
+                    self.planmgr.notify()
                 else:
                     #otherwise update value
                     with self.wind_data.dict_lock:
                         self.wind_data[sensor_topic_parts[1]].curr_value = float(payload)
+                        if self.wind_data[sensor_topic_parts[1]].change_above_threshold(CHANGE_THRESHOLDS["wind"]):
+                            self.planmgr.notify()
             elif not payload == "":
                 #add new sensor
                 self.wind_data.update({sensor_topic_parts[1]: SensorState(float(payload), 999)})
+                #if a sensor gets added --> notify plan manager
+                self.planmgr.notify()
         elif sensor_topic_parts[0] == "sun":
             #check if location already stored
             if sensor_topic_parts[1] in self.light_data.keys():
                 #check if message is empty if so remove sensor from list
                 if payload == "":
                     self.light_data.pop(sensor_topic_parts[1])
+                    #if a sensor gets deleted --> notify plan manager
+                    self.planmgr.notify()
                 else:
                     #otherwise update value
                     with self.light_data.dict_lock:
                         self.light_data[sensor_topic_parts[1]].curr_value = float(payload)
+                        if self.light_data[sensor_topic_parts[1]].change_above_threshold(CHANGE_THRESHOLDS["sun"]):
+                            self.planmgr.notify()
             elif not payload == "":
                 #add new sensor
                 self.light_data.update({sensor_topic_parts[1]: SensorState(float(payload), 999)})
+                #if a sensor gets added --> notify plan manager
+                self.planmgr.notify()
         elif sensor_topic_parts[0] == "rain":
             #check if location already stored
             if not payload == "":
                 self.rain.curr_value = float(payload)
+                if self.rain.change_above_threshold(CHANGE_THRESHOLDS["rain"]):
+                    self.planmgr.notify()
             else:
                 self.rain.curr_value = None
+                #if a sensor gets deleted --> notify plan manager
+                self.planmgr.notify()
         elif sensor_topic_parts[0] == "CO2":
             #check if location already stored
             if not payload == "":
                 self.co2.curr_value = float(payload)
+                if self.co2.change_above_threshold(CHANGE_THRESHOLDS["co2"]):
+                    self.planmgr.notify()
             else:
                 self.co2.curr_value = None
+                #if a sensor gets deleted --> notify plan manager
+                self.planmgr.notify()
     
-    def get_windowstates(self):
+    def get_windowstates(self) -> dict:
         """retrieves all windows that should be considered during planning
 
         Returns:
@@ -314,11 +358,76 @@ class DataService:
                     #if so add to result
                     windows[windowlocation] = self.windowstates[windowlocation].current_state
         return windows
+    
+    def get_blindstate(self) -> dict:
+        """retrieves all blinds that should be considered during planning
+
+        Returns:
+            dict[str, str]: returns dict with location and current status
+        """
+        blinds: dict = dict()
+        #iterate over all blinds
+        with self.blindstates.dict_lock:
+            for blindlocation in self.blindstates:
+                #check if blind is set to automated mode
+                if self.blindstates[blindlocation].operation_mode == "auto":
+                    #if so add to result
+                    blinds[blindlocation] = self.blindstates[blindlocation].current_state
+        return blinds
+    
+    def get_heating(self):
+        if self.heating_state.operation_mode == "auto":
+            return self.heating_state
+        else:
+            return None
+
+    def get_sensors(self):
+        """returns sensor information that should be used for planning step
+
+        Returns:
+            dict[str, dict[str, float]]: a dict with key sensor locations and value dict with sensor types as keys
+        """
+        sensors: dict[str, dict[str, str]] = dict()
+        #get noise data
+        with self.noise_data.dict_lock:
+            for location in self.noise_data:
+                if sensors.get(location):
+                    sensors[location].update({"ambientnoise": self.noise_data[location].get_plan_value()})
+                else:
+                    sensors[location] = {"ambientnoise": self.noise_data[location].get_plan_value()}
+        #get wind data
+        with self.wind_data.dict_lock:
+            for location in self.wind_data:
+                if sensors.get(location):
+                    sensors[location].update({"wind": self.wind_data[location].get_plan_value()})
+                else:
+                    sensors[location] = {"wind": self.wind_data[location].get_plan_value()}
+        #get light
+        with self.light_data.dict_lock:
+            for location in self.light_data:
+                if sensors.get(location):
+                    sensors[location].update({"light": self.light_data[location].get_plan_value()})
+                else:
+                    sensors[location] = {"light": self.light_data[location].get_plan_value()}
+        #all unique sensor readings that are not location dependent
+        temp_ins= self.temperature_ins.get_plan_value()
+        temp_out = self.temperature_out.get_plan_value()
+        rain = self.rain.get_plan_value()
+        co2 = self.co2.get_plan_value()
+        return sensors, temp_ins, temp_out, rain, co2
+
+    def get_preferences(self) -> Preferences:
+        """generates and returns a value copy of the current preferences
+
+        Returns:
+            Preferences: copy of the preferences
+        """
+        return self.preferences.copy()
 
 class PlanActionMgr:
     """creates problem file for planner and manages when to execute the planner
     """
-    def __init__(self, mtbp_actions: int) -> None:
+    def __init__(self, mtbp_actions: int = 20) -> None:
         """initializes variables and planner thread 
         Args:
             mtbp_actions (int): specify the minimal time between to planning actions in seconds
@@ -329,8 +438,6 @@ class PlanActionMgr:
         self.last_action_time: dt.datetime = dt.datetime.now()+dt.timedelta(seconds=mtbp_actions*0.8)
         #event used to signal if planning is required
         self.planning_req: Event = Event()
-        #set event to true to run planner 1 time initially
-        self.planning_req.set()
         #flag to track if a timer to start planning action as soon as possible has been set 
         #--> avoid setting multiple timers
         self.delayed_timer_set: bool = False
@@ -338,15 +445,19 @@ class PlanActionMgr:
         self.timer_set_lock: Lock = Lock()
         #initialize empty data service
         self.data: DataService = None
+        self.logvar = []
 
     def registerDataService(self, dataS: DataService):
         #set data service
         self.data = dataS
         #allow for init time
         self.last_action_time: dt.datetime = dt.datetime.now()+dt.timedelta(seconds=self.mtbp_actions*0.8)
+        #run planner 1 time initially
+        self.notify()
         #start planning loop
         self.planning_thread = Thread(target=self.planning_loop, daemon=True)
         self.planning_thread.start()
+        
 
     def planning_loop(self):
         print("loop started")
@@ -367,7 +478,7 @@ class PlanActionMgr:
         if the minimal amount of time between planning actions has not passed yet __notify_delayed will be called
         """
         #time delta since last action in seconds
-        action_time_delta = (dt.datetime.now-self.last_action_time).total_seconds()
+        action_time_delta = (dt.datetime.now()-self.last_action_time).total_seconds()
         #if time passed since last action is bigger than minimum time between actions
         #AND no timer is set that would trigger planner anyway --> trigger planner
         if action_time_delta > self.mtbp_actions and not self.checkTimerSet():
@@ -406,19 +517,99 @@ class PlanActionMgr:
         #call actual planner and parse output
     
     def create_planner_problem(self):
-        dirname, filename = os.path.split(os.path.abspath(__file__))
-        #read in the problem template
-        with open(dirname+"/problem_template.pddl") as f:
-            p_template: str = f.read()
+        self.logvar.append("creating planner problem")
         #vars used to later on generate problem
         objects_part: dict = dict()
         init_part: dict = dict()
         goal_part: dict = dict()
         #gather window data
         windows: dict = self.data.get_windowstates()
+        #gather blind data
+        blinds: dict = self.data.get_blindstate()
+        #gather heating data
+        heating: dict = self.data.get_heating()
+        #gather sensor data
+        sensors, temp_ins, temp_out, rain, co2 = self.data.get_sensors()
+        #get preferences
+        preferences: Preferences = self.data.get_preferences()
+        self.planning_req.clear()
+        #read in the problem template
+        dirname, filename = os.path.split(os.path.abspath(__file__))
+        with open(dirname+"/problem_template.pddl", "r") as f:
+            p_template: str = f.read()
         #begin replacing necessary variables
-        #start with objects
+        #start with generating objects
+        p_template = self.generate_objects(p_template, windows, blinds)
+        #generate init
+        p_template = self.generate_init_part(p_template, windows, blinds, sensors, temp_ins, temp_out, rain, co2, preferences)
+        self.logvar.append("before write")
+        #write problem file
+        with open(dirname+"/output_template.pddl", "w") as f:
+            f.write(p_template)
+        self.logvar.append("after write")
 
+    def generate_objects(self, template: str, windows, blinds) -> str:
+        """places 
+
+        Args:
+            template (str): [description]
+            windows ([type]): [description]
+            blinds ([type]): [description]
+
+        Returns:
+            str: [description]
+        """
+        object_str = ""
+        #generate windows
+        for loc in windows:
+            object_str += " window_"+loc
+        object_str += " - window\n"
+        #generate blinds
+        for loc in blinds:
+            object_str += " blind_"+loc
+        object_str += " - blind\n"
+        #append heater (constant location)
+        object_str += "central_heater - heater\n"
+        return template.replace(";[objects-template-string]", object_str)
+
+    def generate_init_part(self, template: str, windows, blinds, sensors, temp_ins, temp_out, rain, co2, preferences) -> str:
+        self.logvar.append("generate init part")
+        self.logvar.append((windows, blinds, sensors, temp_ins, temp_out, rain, co2))
+        self.logvar.append(data.blindstates)
+        r_str = ""
+        for location in windows:
+            #add window state vars
+            r_str += self.generate_problem_predicate(windows[location], "window_"+location)
+            r_str += self.generate_problem_predicate("action_available", "window_"+location)
+            #add window specific sensor vars
+            #TODO
+        for location in blinds:
+            #add window state vars
+            r_str += self.generate_problem_predicate(blinds[location], "blind_"+location)
+            r_str += self.generate_blinding_state(location, sensors, "TODO")
+        return template.replace(";[init-template-string]", r_str)
+            
+
+    def generate_problem_predicate(self, predicate, obj) -> str:
+        """creates predicate init string for problem pddl file"""
+        self.logvar.append("generating problem predicate")
+        self.logvar.append(predicate)
+        self.logvar.append(obj)
+        return f"({predicate} {obj})\n"
+
+    def generate_blinding_state(self, location: str, sensors: dict, light_pref: str) -> str:
+        """generates blind state for for a blind object within the pddl problem
+
+        Args:
+            location (str): location of blind
+            sensors (dict): sensor information
+            light_pref (str): user preference for light
+
+        Returns:
+            str: pddl blinding predicate string for blind at location
+        """
+        #TODO
+        return "placeholder"
         
 # %%
 mgr = PlanActionMgr()
