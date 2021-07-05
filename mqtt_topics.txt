@@ -11,7 +11,7 @@ actuators/windows/[location]/command
 		 /blinds/[location]/command
 		 				   /status --> [open, closed]
 						   /mode --> [auto, open, close]
-		 /heating/command
+		 /heating/[location]
 		 					/status --> 0-100 //percentage of maximal heating power
 							/mode --> [auto, manual]
 							/power --> 0-100 //the power that should be applied in case of manual mode
