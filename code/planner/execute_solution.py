@@ -25,7 +25,7 @@ def execute_solution (solution, client):
             client.publish("actuators/blinds/" + location + "/command", "close")
 
         if command == "turn_heater_on":
-            client.publish("actuators/heating/" + location + "/command", "on")
+            client.publish("actuators/heating/command/power", "100")
 
         if command == "turn_heater_off":
-            client.publish("actuators/heating/" + location + "/command", "off")
+            client.publish("actuators/heating/command/power", "0")
