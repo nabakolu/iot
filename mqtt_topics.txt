@@ -12,9 +12,9 @@ actuators/windows/[location]/command
 		 				   /status --> [open, closed]
 						   /mode --> [auto, open, close]
 		 /heating/[location]
-		 					/status --> 0-100 //percentage of maximal heating power
+		 					/status --> [on, off]
 							/mode --> [auto, manual]
-							/power --> 0-100 //the power that should be applied in case of manual mode
+							/power --> [on, off]
 
 //user preferences
 CoValuePreference --> co2 preference int 1-5 with {1: , 2: , 3: , 4: , 5: ,}
