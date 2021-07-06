@@ -155,7 +155,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 void loop() {
 	mqtt.loop();
-	delay(100);
+	delay(1000);
 	char msg[8];
 	itoa(analogRead(light_pin), msg, 10);
 	mqtt.publish("sensors/sun/west", msg, true);
