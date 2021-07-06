@@ -24,7 +24,7 @@ def execute_solution (solution: str, client: mqtt.Client):
             client.publish("actuators/blinds/" + location + "/command", "close")
 
         if command == "turn_heater_on":
-            client.publish("actuators/heating/command/power", "100")
+            client.publish("actuators/heating/command", "100")
 
         if command == "turn_heater_off":
-            client.publish("actuators/heating/command/power", "0")
+            client.publish("actuators/heating/command", "0")
