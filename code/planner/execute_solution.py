@@ -1,8 +1,7 @@
 import re
 import paho.mqtt.client as mqtt
 
-# solution: string, client: mqtt-client
-def execute_solution (solution, client):
+def execute_solution (solution: str, client: mqtt.Client):
     """ parse output of planner and send respective mqtt messages """
     solution = solution.split(";;;; Solution Found")[1] # first get only the last part, in which the solution is listed
     solution = solution.split("\n") # split each line
