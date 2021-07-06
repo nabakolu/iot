@@ -7,9 +7,14 @@ import json
 from threading import Thread, Lock, Event, Timer
 from dataclasses import dataclass, field
 import datetime as dt
+import math
+import subprocess
+from execute_solution import execute_solution
 
 #thresholds for maximum change that can occur to a value before recalculation is triggered
 CHANGE_THRESHOLDS = {"temperature": 1.5, "co2": 40,"noise": 2, "wind": 1.5, "sun": 150, "rain": 0.5}
+#importance of outside influences for the decicion to operate the window
+INFLUENCE_IMPORTANCE = {"co2": 3, "noise": 1, "wind": 1, "rain": 1.5}
 
 @dataclass
 class ActuatorState:
@@ -108,7 +113,7 @@ class DataService:
         self.wind_data: LockedDict[str, SensorState] = LockedDict()
         self.light_data: LockedDict[str, SensorState] = LockedDict()
         #actuator values
-        self.heating_state: ActuatorState = ActuatorState("auto", "off")
+        self.heating_state: ActuatorState = ActuatorState("auto", 0)
         self.windowstates: LockedDict[str, ActuatorState] = LockedDict()
         self.blindstates: LockedDict[str, ActuatorState] = LockedDict()
         #preferences
@@ -375,7 +380,7 @@ class DataService:
                     blinds[blindlocation] = self.blindstates[blindlocation].current_state
         return blinds
     
-    def get_heating(self):
+    def get_heating(self) -> float:
         if self.heating_state.operation_mode == "auto":
             return self.heating_state
         else:
@@ -471,6 +476,7 @@ class PlanActionMgr:
             self.planning_req.clear()
             #create problem for planner
             self.create_planner_problem()
+            self.execute_planner()
 
 
     def notify(self) -> None:
@@ -513,8 +519,17 @@ class PlanActionMgr:
             return self.delayed_timer_set
 
     def execute_planner(self):
-        self.create_planner_problem()
-        #call actual planner and parse output
+        #call actual planner
+        cmd = "optic-clp window-domain.pddl output_template.pddl"
+        p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if len(p.stderr) != 0:
+            print("!!!Planner stderr not empty:\n", p.stderr)
+        #execute found solution
+        try:
+            execute_solution(p.stdout, self.data.client)
+        except Exception as e:
+            print("Exception in execute_solution():\n", e)
+        
     
     def create_planner_problem(self):
         self.logvar.append("creating planner problem")
@@ -541,12 +556,32 @@ class PlanActionMgr:
         #start with generating objects
         p_template = self.generate_objects(p_template, windows, blinds)
         #generate init
-        p_template = self.generate_init_part(p_template, windows, blinds, sensors, temp_ins, temp_out, rain, co2, preferences)
-        self.logvar.append("before write")
+        p_template = self.generate_init_part(p_template, windows, blinds, sensors, temp_ins, temp_out, rain, co2, preferences, heating)
+        #generate goal
+        p_template = self.generate_goal_part(p_template, windows, blinds, heating)
         #write problem file
         with open(dirname+"/output_template.pddl", "w") as f:
             f.write(p_template)
-        self.logvar.append("after write")
+
+    def generate_goal_part(self, p_template, windows, blinds, heating) -> str:
+        r_str = "(and\n"
+        for location in blinds:
+            r_str += self.generate_problem_predicate("not_blinding", "blind_"+location)
+            r_str += self.generate_goal_preference("blindsOpen", "open", "blind_"+location)
+        for location in windows:
+            r_str += self.generate_goal_preference("windowsOpen", "open", "window_"+location)
+        #TODO recomment for final
+        #if heating != None:
+        r_str += self.generate_goal_preference("heaterPref", "heater_off", "central_heater")
+        r_str += self.generate_goal_preference("heaterPref", "heater_on", "central_heater")
+        r_str += ")\n"
+        return p_template.replace(";[goal-template-string]", r_str)
+
+    def generate_goal_preference(self, name, predicate, obj) -> str:
+        r_str = f"(preference {name}\n"
+        r_str += "  "+self.generate_problem_predicate(predicate, obj)
+        r_str += ")\n"
+        return r_str
 
     def generate_objects(self, template: str, windows, blinds) -> str:
         """places 
@@ -572,29 +607,37 @@ class PlanActionMgr:
         object_str += "central_heater - heater\n"
         return template.replace(";[objects-template-string]", object_str)
 
-    def generate_init_part(self, template: str, windows, blinds, sensors, temp_ins, temp_out, rain, co2, preferences) -> str:
+    def generate_init_part(self, template: str, windows, blinds, sensors, temp_ins, temp_out, rain, co2, preferences: Preferences, heating: float) -> str:
         self.logvar.append("generate init part")
         self.logvar.append((windows, blinds, sensors, temp_ins, temp_out, rain, co2))
         self.logvar.append(data.blindstates)
         r_str = ""
+        #generate co2 value
+        r_str += f"(= (co2) {self.map_co2_to_val(co2, preferences.co2 ,INFLUENCE_IMPORTANCE['co2'])})\n"
         for location in windows:
-            #add window state vars
-            r_str += self.generate_problem_predicate(windows[location], "window_"+location)
-            r_str += self.generate_problem_predicate("action_available", "window_"+location)
-            #add window specific sensor vars
-            #TODO
+            if not windows[location] in [None, " ", ""]:
+                #add window state vars
+                r_str += self.generate_problem_predicate(windows[location], "window_"+location)
+                r_str += self.generate_problem_predicate("action_available", "window_"+location)
+                #add window specific sensor vars
+                r_str += self.generate_window_sensor_vals(location, sensors, preferences, rain)
         for location in blinds:
-            #add window state vars
-            r_str += self.generate_problem_predicate(blinds[location], "blind_"+location)
-            r_str += self.generate_blinding_state(location, sensors, "TODO")
+            if not blinds[location] in [None, " ", ""]:
+                #add window state vars
+                r_str += self.generate_problem_predicate(blinds[location], "blind_"+location)
+                r_str += self.generate_blinding_state(location, sensors, preferences.light)
+        #TODO recomment in for final release
+        #if heating != None:
+        r_str += self.generate_heater(temp_ins, temp_out, heating, preferences)
         return template.replace(";[init-template-string]", r_str)
             
 
+    def generate_problem_function(self, function, obj, value) -> str:
+        """creates string to initialize a function value for the problem pddl file"""
+        return f"(= ({function} {obj}) {value})\n"
+
     def generate_problem_predicate(self, predicate, obj) -> str:
         """creates predicate init string for problem pddl file"""
-        self.logvar.append("generating problem predicate")
-        self.logvar.append(predicate)
-        self.logvar.append(obj)
         return f"({predicate} {obj})\n"
 
     def generate_blinding_state(self, location: str, sensors: dict, light_pref: str) -> str:
@@ -608,11 +651,136 @@ class PlanActionMgr:
         Returns:
             str: pddl blinding predicate string for blind at location
         """
-        #TODO
-        return "placeholder"
-        
+        #pre high --> light > 0.4*1024 --> blinding
+        #pre med --> light > 0.6*1024 --> blinding
+        #pre low --> light > 0.8*1024 --> blinding
+        blind_str = ""
+        blinding = False
+        #userpref for light sensitivity disabled or no sensor present --> not blinding
+        if not sensors.get(location) or not sensors.get(location).get("light") or light_pref == "disabled":
+            pass
+        elif light_pref == "low":
+            if sensors.get(location).get("light") > 0.8*1024:
+                blinding = True
+        elif light_pref == "mid":
+            if sensors.get(location).get("light") > 0.6*1024:
+                blinding = True
+        elif light_pref == "high":
+            if sensors.get(location).get("light") > 0.4*1024:
+                blinding = True
+        if blinding:
+            blind_str += self.generate_problem_predicate("blinding", "blind_"+location)
+        else:
+            blind_str += self.generate_problem_predicate("not_blinding", "blind_"+location)
+            blind_str += self.generate_problem_predicate("not_blinding_initial", "blind_"+location)
+        return blind_str
+    
+    def generate_heater(self, temp_ins, temp_out, heating, preferences: Preferences):
+        # weight += (min_temp-curr_temp) --> belohnung heizung an
+        # 
+        # weight += ?windows_open(0|1) * abs(outdoor_temp-curr_temp) --> belohnung heizung aus
+        #
+        #belohnung weil zu kalt - wenn fenster offen ist: bestrafung abstand ausentemperatur
+        r_str = ""
+        r_str += self.generate_problem_predicate("heater_action_available", "central_heater")
+        if heating == 0:
+            r_str += self.generate_problem_predicate("heater_off", "central_heater")
+        else:
+            r_str += self.generate_problem_predicate("heater_on", "central_heater")
+        #calc diff temp inside to to min_temp
+        min_temp = preferences.temperature[0]
+        if min_temp != None and temp_ins != None and temp_out != None:
+            r_str += self.generate_problem_function("min_temp", "central_heater", min_temp)
+            r_str += self.generate_problem_function("curr_temp", "central_heater", temp_ins)
+            r_str += self.generate_problem_function("temperatureDiffMinimum", "central_heater", min_temp-temp_ins)
+            r_str += self.generate_problem_function("temperatureDiffOutside", "central_heater", abs(temp_out-temp_ins))
+        return r_str
+
+
+    def windows_open_close(self):
+        #(+ co2value (- 1 (+ (ambientnoise ?window) (+ (wind ?window) (rain ?window))))))
+        # weight += 1 -(noise+wind+rain)
+        #co2 --> (user_pref, value)
+            #user_pref --> poor, fair, average, good excellent
+            #value --> min 200 max 20000
+        #noise --> (noise_pref, noise_val)
+            #noise user val --> disabled, low, mid, high
+            #min 30 max 110
+        #wind --> (wind_pref, wind_val)
+            #wind user val --> disabled, low, mid, high
+            #min 0 max 100
+        #rain --> 0,1
+        #!!!paper to justify ranges
+        #https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8631933
+        #-----------------------------------------------------------------------
+        #3map(co2) - 1map(noise)-1map(wind)-1.5map(rain)
+        pass
+
+    def generate_window_sensor_vals(self, location: str, sensors: dict, preferences: Preferences, rain):
+        #check if location in sensors
+        r_str = ""
+        sensors_at_location = sensors.get(location)
+        if sensors_at_location:
+            #if wind sensor is present at location
+            if "wind" in sensors_at_location:
+                r_str += self.generate_problem_function("wind", "window_"+location, self.map_wind_to_val(sensors_at_location["wind"], preferences.wind, INFLUENCE_IMPORTANCE["wind"]))
+            #if noise sensor is present at location
+            if "ambientnoise" in sensors_at_location:
+                r_str += self.generate_problem_function("ambientnoise", "window_"+location, self.map_noise_to_val(sensors_at_location["ambientnoise"], preferences.noise, INFLUENCE_IMPORTANCE["noise"]))
+            #if rain sensor is present
+            if rain != None:
+                r_str += self.generate_problem_function("rain", "window_"+location,  rain*INFLUENCE_IMPORTANCE["noise"])
+        return r_str
+
+
+    def map_co2_to_val(self, co2, pref, weight) -> float:
+        #!!!paper to justify ranges
+        #https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8631933
+        pref_ranges = {4: [200-250], 3: [350, 1000], 2: [1000, 2000], 1: [2000, 5000], 0: [5000, 10000]}
+        value_range = pref_ranges[pref]
+        if co2 < value_range[0]:
+            return 0
+        elif co2 < value_range[1]:
+            return (co2-value_range[0])/(value_range[1]-value_range[0])*weight
+        else:
+            return weight
+
+    def map_noise_to_val(self, noise, pref, weight) -> float:
+        #!!!gov site to justify ranges https://www.cdc.gov/nceh/hearing_loss/what_noises_cause_hearing_loss.html
+        pref_ranges = {"high": [30, 70], "mid": [70, 85], "low": [85, 100], "disabled": [math.inf,math.inf]}
+        value_range = pref_ranges[pref]
+        if noise < value_range[0]:
+            return 0
+        elif noise < value_range[1]:
+            return (noise-value_range[0])/(value_range[1]-value_range[0])*weight
+        else:
+            return weight
+
+    def map_wind_to_val(self, wind, pref, weight) -> float:
+        #beaufort scale wiki
+        pref_ranges = {"high": [0, 5], "mid": [5, 20], "low": [20, 40], "disabled": [math.inf,math.inf]}
+        value_range = pref_ranges[pref]
+        if wind < value_range[0]:
+            return 0
+        elif wind < value_range[1]:
+            return (wind-value_range[0])/(value_range[1]-value_range[0])*weight
+        else:
+            return weight
+
 # %%
 mgr = PlanActionMgr()
 data = DataService(mgr)
 #%% 
 input()
+#%%
+# def map_co2_to_val(co2, pref, weight=3):
+#     #!!!paper to justify ranges
+#     #https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8631933
+#     pref_ranges = {4: [200-250], 3: [350, 1000], 2: [1000, 2000], 1: [2000, 5000], 0: [5000, 10000]}
+#     value_range = pref_ranges[pref]
+#     if co2 < value_range[0]:
+#         return 0
+#     elif co2 < value_range[1]:
+#         return (co2-value_range[0])/(value_range[1]-value_range[0])*weight
+#     else:
+#         return weight

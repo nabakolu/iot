@@ -137,7 +137,7 @@ class TemperatureSensor(Sensor):
             self.value += (self.dataService.outside_temp-self.value)*0.07*tdelta*num_open_win
             #effect of heating
             if self.dataService.heating_power:
-                self.value += (self.max_heater_temp-self.value)*tdelta*0.08*self.dataService.heating_power
+                self.value += (self.max_heater_temp-self.value)*tdelta*0.03*self.dataService.heating_power
             #range restriction
             self.value = max(-15, min(self.value, 50))
         self.lastsimulation = dt.datetime.now()
@@ -272,10 +272,11 @@ out_temp = TemperatureSensor()
 in_temp = TemperatureSensor(25, True, data)
 noise_east = NoiseSensor("east")
 noise_west = NoiseSensor("west")
-wind = WindSensor("outside")
+wind_east = WindSensor("east")
+wind_west = WindSensor("west")
 co = CoSensor(data)
 
-sensor_list: Sensor = [out_temp, in_temp, noise_east, noise_west, wind, co]
+sensor_list: Sensor = [out_temp, in_temp, noise_east, noise_west, wind_east, wind_west, co]
 # %%
 def show_status():
         status = ""
@@ -316,9 +317,14 @@ class cli(cmd.Cmd):
 
     @nofail
     def do_windspeed(self, line):
-        """windspeed [value]
+        """windspeed [location] [value]
         -set windspeed to value"""
-        wind.value = float(line.split(" ")[-1])
+        location, value = line.split(" ")[-2], line.split(" ")[-1]
+        for i in sensor_list:
+            if isinstance(i, WindSensor) and i.location == location:
+                i.value = float(value)
+                return None
+        print("No noise location found for location:", location)
 
     @nofail
     def do_co2conc(self, line):
