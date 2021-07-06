@@ -152,7 +152,7 @@ class DataService:
         print(f"Heating is in mode: ", self.heating_state.operation_mode, "Current state of heating is: ", self.heating_state.current_state)
         
 
-    def __print_sensor_dict(self, name: str, sensor_dict: LockedDict[str, SensorState]):
+    def __print_sensor_dict(self, name: str, sensor_dict):
         #iterate over list of locatins for given sensor
         with sensor_dict.dict_lock:
             for location in sensor_dict:
@@ -179,7 +179,7 @@ class DataService:
     def on_message(self, client, userdata, msg: mqtt.MQTTMessage):
         topic_parts: list[str] = msg.topic.split("/")
         payload: str = msg.payload.decode("utf-8")
-        print("message arrived topic is: ", msg.topic)
+        #print("message arrived topic is: ", msg.topic)
         if topic_parts[0] == "sensors":
             #message contains sensor information
             self.parse_sensor_msg(topic_parts[1:], payload)
@@ -230,6 +230,8 @@ class DataService:
         elif act_topic_parts[0] == "heating":
             #handle heating msg
             if act_topic_parts[1] == "status":
+                if payload == "":
+                    payload = 0
                 self.heating_state.current_state = float(payload)
             elif act_topic_parts[1] == "mode":
                 self.heating_state.operation_mode = payload
@@ -432,7 +434,7 @@ class DataService:
 class PlanActionMgr:
     """creates problem file for planner and manages when to execute the planner
     """
-    def __init__(self, mtbp_actions: int = 20) -> None:
+    def __init__(self, mtbp_actions: int = 3) -> None:
         """initializes variables and planner thread 
         Args:
             mtbp_actions (int): specify the minimal time between to planning actions in seconds
@@ -520,15 +522,16 @@ class PlanActionMgr:
 
     def execute_planner(self):
         #call actual planner
-        cmd = "optic-clp window-domain.pddl output_template.pddl"
+        cmd = "wsl.exe optic-clp window-domain.pddl output_template.pddl"
         p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if len(p.stderr) != 0:
             print("!!!Planner stderr not empty:\n", p.stderr)
         #execute found solution
         try:
-            execute_solution(p.stdout, self.data.client)
+            execute_solution(p.stdout.decode("utf-8") , self.data.client)
         except Exception as e:
             print("Exception in execute_solution():\n", e)
+            #print(p.stdout)
         
     
     def create_planner_problem(self):
@@ -736,7 +739,9 @@ class PlanActionMgr:
     def map_co2_to_val(self, co2, pref, weight) -> float:
         #!!!paper to justify ranges
         #https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=8631933
-        pref_ranges = {4: [200-250], 3: [350, 1000], 2: [1000, 2000], 1: [2000, 5000], 0: [5000, 10000]}
+        if not co2:
+            return None
+        pref_ranges = {5: [200, 250], 4: [350, 1000], 3: [1000, 2000], 2: [2000, 5000], 1: [5000, 10000]}
         value_range = pref_ranges[pref]
         if co2 < value_range[0]:
             return 0

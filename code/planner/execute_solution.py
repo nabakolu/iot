@@ -17,7 +17,7 @@ def execute_solution (solution: str, client: mqtt.Client):
         if command == "closewindow":
             client.publish("actuators/windows/" + location + "/command", "close")
 
-        if command == "openedblinds":
+        if command == "openblinds":
             client.publish("actuators/blinds/" + location + "/command", "open")
 
         if command == "closeblinds":

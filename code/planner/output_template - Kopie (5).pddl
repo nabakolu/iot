@@ -1,7 +1,7 @@
 (define (problem windows)
     (:domain awp)
     (:objects
- window_west - window
+ window_west window_east - window
  blind_east blind_west - blind
 central_heater - heater
 
@@ -19,24 +19,28 @@ central_heater - heater
         (= (any_window_open) 0)
 
 ;generated part
-(= (co2) 0)
+(= (co2) 0.6168000000000001)
 (closed window_west)
 (action_available window_west)
-(= (wind window_west) 1)
+(= (wind window_west) 0.08800000000000002)
 (= (ambientnoise window_west) 1)
 (= (rain window_west) 0.0)
+(open window_east)
+(action_available window_east)
+(= (wind window_east) 0)
+(= (ambientnoise window_east) 0.40449999999999997)
+(= (rain window_east) 0.0)
 (open blind_east)
 (not_blinding blind_east)
 (not_blinding_initial blind_east)
-(open blind_west)
-(not_blinding blind_west)
-(not_blinding_initial blind_west)
+(closed blind_west)
+(blinding blind_west)
 (heater_action_available central_heater)
 (heater_on central_heater)
 (= (min_temp central_heater) 18.7)
-(= (curr_temp central_heater) 22.31)
-(= (temperatureDiffMinimum central_heater) -3.6099999999999994)
-(= (temperatureDiffOutside central_heater) 2.379999999999999)
+(= (curr_temp central_heater) 22.43)
+(= (temperatureDiffMinimum central_heater) -3.7300000000000004)
+(= (temperatureDiffOutside central_heater) 2.5199999999999996)
 
         
     )
@@ -53,6 +57,9 @@ central_heater - heater
 )
 (preference windowsOpen
   (open window_west)
+)
+(preference windowsOpen
+  (open window_east)
 )
 (preference heaterPref
   (heater_off central_heater)

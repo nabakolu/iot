@@ -75,15 +75,16 @@
                             (not_action_available ?w)
                         )
     )
-    :effect (and (not (heater_off ?heater))
-                (heater_on ?heater)
-                (not (heater_action_available ?heater))
-                (assign (heaterweight) (+ (heaterweight) (- (min_temp ?heater) (curr_temp ?heater))))
-                ; (assign (heaterweight) (+ (heaterweight) (- (* (- (min_temp ?heater) (curr_temp ?heater)) (- (min_temp ?heater) (curr_temp ?heater))) (* (any_window_open) 
-                ; (* (- (curr_temp ?heater) (outdoor_temp ?heater)) (- (curr_temp ?heater) (outdoor_temp ?heater))) ;punishment for heating while window is open
-                ; ))))
-                ; curr_temp < min_temp --> how much colder? --> reward --> min_temp-current_temp
-                ; additionally window open --> outdoor temp? --> punish opening window --> |current_temp-outdoor_temp|
+        :effect (and (not (heater_off ?heater))
+            (heater_on ?heater)
+            (not (heater_action_available ?heater))
+            ; (assign
+            ;     (heaterweight)
+            ;     (+ (heaterweight) (- (min_temp ?heater)
+            ;             (- (curr_temp ?heater) (* (any_window_open) (temperatureDiffOutside ?heater)))
+            ;         ))
+            (assign (heaterweight) (+ (heaterweight) (- (- (min_temp ?heater) (curr_temp ?heater)) (* (any_window_open) (temperatureDiffOutside ?heater)))))
+                ;(min temp - current temp)-anywinopem*tempDiffoutside
     )
 )
 
@@ -100,7 +101,8 @@
     :effect (and (not (heater_on ?heater))
                 (heater_off ?heater)
                 (not (heater_action_available ?heater))
-                (assign (heaterweight) (+ (heaterweight) (* (any_window_open) (temperatureDiffOutside ?heater))))
+                (increase (heaterweight) 0.1)
+                ;(assign (heaterweight) (+ (heaterweight) (* (any_window_open) (temperatureDiffOutside ?heater))))
     )
 )
 
