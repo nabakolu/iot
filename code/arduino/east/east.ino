@@ -75,7 +75,7 @@ void setup() {
 	while (!mqtt.connected()) {
 		Serial.println("Connecting to MQTT...");
 
-		if (mqtt.connect("east", mqttUser, mqttPassword )) {
+		if (mqtt.connect("east", mqttUser, mqttPassword, "actuators/windows/east/status", 1, true, "" )) {
 
 			Serial.println("connected");
 
