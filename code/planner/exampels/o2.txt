@@ -1,76 +1,0 @@
-Number of literals: 19
-Constructing lookup tables:
-Post filtering unreachable actions: 
-(heaterweight) fixed and defined by at least (heater_off central_heater)
-No semaphore facts found, returning
-(openedblinds) has finite bounds: [0.000,0.000]
-(co2value) has a finite lower bound: [0.000,inf]
-(heaterweight) has finite bounds: [0.000,200.000]
-(any_window_open) has finite bounds: [0.000,1.000]
-Seeing if metric is defined in terms of task vars or a minimal value of makespan
-- Yes it is
-[01;34mNo analytic limits found, not considering limit effects of goal-only operators[00m
-Assignment numeric effect ((any_window_open) = 1.000) makes effects on 3 be order-dependent
-Assignment numeric effect ((co2value) = 0.300 + (co2value)) makes effects on 1 be order-dependent
-Assignment numeric effect ((co2value) = 0.400 + (co2value)) makes effects on 1 be order-dependent
-Assignment numeric effect ((heaterweight) = 200.000) makes effects on 2 be order-dependent
-Action 2 - (turn_heater_off central_heater) is uninteresting once we have fact (heater_off central_heater)
-Action 5 - (closeblinds blind_east) is uninteresting once we have fact (not_blinding blind_east)
-Action 6 - (closeblinds blind_west) is uninteresting once we have fact (not_blinding blind_west)
-Initial heuristic = 5.000, admissible cost estimate nan
-b (4.000 | 0.000)(G)
-; LP calculated the cost
-
-; Plan found with metric 0.000
-; States evaluated so far: 3
-; States pruned based on pre-heuristic cost lower bound: 0
-; Time 0.00
-0.000: (closeblinds blind_west)  [0.001]
-0.000: (closeblinds blind_east)  [0.001]
-
-Resorting to best-first search
-Running WA* with W = 5.000, not restarting with goal states
-b (4.000 | 0.000)b (3.000 | 0.000)(G)
-; LP calculated the cost
-
-; Plan found with metric 0.300
-; States evaluated so far: 16
-; States pruned based on pre-heuristic cost lower bound: 0
-; Time 0.00
-0.000: (openwindow window_east)  [0.001]
-0.000: (closeblinds blind_west)  [0.001]
-0.000: (closeblinds blind_east)  [0.001]
-b (2.000 | 0.000)(G)
-; LP calculated the cost
-
-; Plan found with metric 200.300
-; States evaluated so far: 20
-; States pruned based on pre-heuristic cost lower bound: 0
-; Time 0.00
-0.000: (openwindow window_east)  [0.001]
-0.000: (closeblinds blind_west)  [0.001]
-0.000: (closeblinds blind_east)  [0.001]
-0.000: (turn_heater_off central_heater)  [0.001]
-b (1.000 | 0.000)(G)(G)(G)
-; LP calculated the cost
-
-; Plan found with metric 200.700
-; States evaluated so far: 23
-; States pruned based on pre-heuristic cost lower bound: 0
-; Time 0.00
-0.000: (openwindow window_east)  [0.001]
-0.000: (closeblinds blind_west)  [0.001]
-0.000: (closeblinds blind_east)  [0.001]
-0.000: (turn_heater_off central_heater)  [0.001]
-0.001: (openwindow window_west)  [0.001]
-b (0.000 | 0.001)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)(G)
-Problem Unsolvable
-;;;; Solution Found
-; States evaluated: 956
-; Cost: 200.700
-; Time 0.13
-0.000: (openwindow window_east)  [0.001]
-0.000: (closeblinds blind_west)  [0.001]
-0.000: (closeblinds blind_east)  [0.001]
-0.000: (turn_heater_off central_heater)  [0.001]
-0.001: (openwindow window_west)  [0.001]
