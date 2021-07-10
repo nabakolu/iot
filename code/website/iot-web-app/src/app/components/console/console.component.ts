@@ -102,13 +102,15 @@ Available commands are:
   -removelocation -[location]
       desc: removes all actuators connected to a location (actuators will be automatically added again if new message comes in)
       example: removelocation -north_lower
+  -removesensor -[sensorType] -[location]
+      example: reomvesensor -sun -east 
   `
     }
     else if (command.toLowerCase().startsWith("mqtt")){
       let cmdParts: Array<string> = command.split("-")
       let topic: string = cmdParts[1].trim()
       let message: string = cmdParts[2].trim()
-      this.dataServiceInstance.publishMQTT(topic, message, false);
+      this.dataServiceInstance.publishMQTT(topic, message, true);
       return "Send MQTT message to topic: " + topic
     }
     else if (command.toLowerCase().startsWith("mockwinblin")){
@@ -164,6 +166,13 @@ Available commands are:
       this.dataServiceInstance.publishMQTT("actuators/windows/" +location +"/mock", "", true);
       this.dataServiceInstance.publishMQTT("actuators/blinds/" +location +"/mock", "", true);
       return "Deleted all actuators for location: " + location
+    }
+    else if (command.toLowerCase().startsWith("removesensor")) {
+      let cmdParts: Array<string> = command.split("-")
+      let type: string = cmdParts[1].trim()
+      let location: string = cmdParts[2].trim()
+      this.dataServiceInstance.publishMQTT("sensors/" + type + "/" + location + "/status", "", true);
+      return "Deleted sensor of type: " + type + " at location: " + location
     }
     else{
       return "Unrecognized command type 'help' to get an overview of available commands"
