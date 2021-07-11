@@ -171,7 +171,7 @@ Available commands are:
       let cmdParts: Array<string> = command.split("-")
       let type: string = cmdParts[1].trim()
       let location: string = cmdParts[2].trim()
-      this.dataServiceInstance.publishMQTT("sensors/" + type + "/" + location + "/status", "", true);
+      this.dataServiceInstance.publishMQTT("sensors/" + type + "/" + location, "", true);
       return "Deleted sensor of type: " + type + " at location: " + location
     }
     else{
