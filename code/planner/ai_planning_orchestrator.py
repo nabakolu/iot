@@ -524,10 +524,12 @@ class PlanActionMgr:
         #call actual planner
         cmd = "wsl.exe optic-clp window-domain.pddl output_template.pddl"
         p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if len(p.stderr) != 0:
-            print("!!!Planner stderr not empty:\n", p.stderr)
+        #if len(p.stderr) != 0:
+            #print("!!!Planner stderr not empty:\n", p.stderr)
         #execute found solution
         try:
+            print("")
+            print(p.stdout.decode("utf-8")[p.stdout.decode("utf-8").find(";;;; Solution Found"):])
             execute_solution(p.stdout.decode("utf-8") , self.data.client)
         except Exception as e:
             print("Exception in execute_solution():\n", e)
@@ -628,7 +630,10 @@ class PlanActionMgr:
             if not blinds[location] in [None, " ", ""]:
                 #add window state vars
                 r_str += self.generate_problem_predicate(blinds[location], "blind_"+location)
-                r_str += self.generate_blinding_state(location, sensors, preferences.light)
+                if blinds[location] == "open":
+                    r_str += self.generate_blinding_state(location, sensors, preferences.light)
+                else:
+                    r_str += self.generate_blinding_state(location, sensors, "disabled")
         #TODO recomment in for final release
         #if heating != None:
         r_str += self.generate_heater(temp_ins, temp_out, heating, preferences)
