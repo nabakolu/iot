@@ -26,6 +26,49 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
-## picture
+## Pictures
 
-![text](../../graphics/web_app/website_dash_big.png?raw=true)
+<table style="width:100%;">
+  <tr valign="top">
+    <td align="center">
+      <a target="_blank"><img src="../../graphics/web_app/website_dash_big.png" title="Dashboard"></a>
+    <em>Dashboard: Get information about the current system state and control actuators</em>
+    </td>
+  </tr>
+</table>
+
+<table style="width:100%;">
+  <tr valign="top">
+    <td align="center">
+      <a target="_blank"><img src="../../graphics/web_app/sensors.png" title="Sensor Overview"></a>
+    <em>Sensors: Overview of currently connected sensors</em>
+    </td>
+  </tr>
+</table>
+
+<table style="width:100%;">
+  <tr valign="top">
+    <td align="center">
+      <a target="_blank"><img src="../../graphics/web_app/actuators.png" title="Actuators Overview"></a>
+    <em>Actuators: Overview of the currently connected actuators</em>
+    </td>
+  </tr>
+</table>
+
+<table style="width:100%;">
+  <tr valign="top">
+    <td align="center">
+      <a target="_blank"><img src="../../graphics/web_app/automation_preference.png" title="User preferences"></a>
+    <em>Customize: Customize the automation to the users preferences</em>
+    </td>
+  </tr>
+</table>
+
+<table style="width:100%;">
+  <tr valign="top">
+    <td align="center">
+      <a target="_blank"><img src="../../graphics/web_app/terminal_pic.png" title="Terminal"></a>
+    <em>Console: Mock, Test and Debug website features</em>
+    </td>
+  </tr>
+</table>
