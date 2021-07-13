@@ -63,3 +63,12 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
     </td>
   </tr>
 </table>
+
+<table style="width:100%;">
+  <tr valign="top">
+    <td align="center">
+      <a target="_blank"><img src="../../graphics/web_app/terminal_pic.png" title="Terminal"></a>
+    <em>Console: Mock, Test, Debug website features</em>
+    </td>
+  </tr>
+</table>
