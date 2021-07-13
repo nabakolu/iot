@@ -1,0 +1,41 @@
+<div class="header-container">
+  <mat-toolbar color="primary">
+    <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+      <img
+      width="40"
+      alt="AWP Logo"
+      src="/assets/images/header/logoamber.png"
+    />
+    </button>
+    <span (click)="drawer.toggle()">AWP System - Admin Module</span>
+  </mat-toolbar>
+
+
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav sidenav-complete" fixedInViewport="false" 
+      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'"
+      [opened]="(isHandset$ | async) === false">
+      <mat-toolbar >
+        <mat-toolbar-row><h2 class="sidenav-toolbar">Menu</h2></mat-toolbar-row>
+      </mat-toolbar>
+      
+      <mat-nav-list class="list-modules">
+        <mat-list-item *ngFor="let nav_sidebar_item of sidebarNavItems; let i = index" 
+          routerLink="{{nav_sidebar_item.routerLink}}"
+          (click)='selectedItemIndex = i;'
+          [ngClass]="{'active-sidebar-nav-item': selectedItemIndex === i, 'mat-elevation-z8': selectedItemIndex === i}"
+          > 
+          <a class="sidebar-nav-item-container"
+            [ngClass]="{'fancy-text-color': selectedItemIndex !== i}"
+          >
+            <mat-icon class="sidebar-nav-item-icon">{{nav_sidebar_item.material}}</mat-icon>
+            <p>{{nav_sidebar_item.name}}</p>
+          </a>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="router-outlet-content">
+      <router-outlet ></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

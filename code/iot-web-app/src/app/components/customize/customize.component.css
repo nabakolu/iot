@@ -1,0 +1,141 @@
+.full-width-table {
+    width: 100%;
+}
+
+.grid-container {
+    margin: 20px;
+    height: 90%;
+}
+
+mat-card {
+    min-width: 670px;
+}
+
+.mat-h1 {
+    padding-bottom: 16px;
+}
+
+.customize-component-container {
+    margin-left: 15px;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+
+.customize-component-container > div{
+    margin-top: 15px;
+    padding-right: 15px;
+}
+
+.temperature-threshold-container {
+    width: 900px;
+}
+
+.noise-threshold-container{
+    width: 900px;
+}
+
+.temp-reset-button {
+    opacity: 0.9;
+    background-color: #673ab7;
+    color: white;
+}
+
+/* bar in background */
+
+:host ::ng-deep .temperature-customization-content .ngx-slider .ngx-slider-bar {
+    background-color: #673ab7;
+    opacity: 0.4;
+}
+
+/* selection */
+
+:host ::ng-deep .temperature-customization-content .ngx-slider .ngx-slider-selection {
+    background: rgb(255, 193, 7);
+    opacity: 0.7;
+}
+
+/* selection handles */
+
+:host ::ng-deep .temperature-customization-content .ngx-slider .ngx-slider-pointer {
+    background-color: rgba(255, 193, 7, 0.9);
+    outline: none !important;
+}
+
+/* point in the middle of selection handle */
+
+:host ::ng-deep .temperature-customization-content .ngx-slider .ngx-slider-pointer:after {
+    background-color: #673ab7;
+    opacity: 0.4;
+}
+
+.temperature-range-selection-slider-header {
+    font-weight: 450;
+    padding-bottom: 5px;
+    font-size: 18px;
+}
+
+.noise-threshold-toggle mat-button-toggle {
+    background-color: rgba(255, 193, 7, 0.8);
+    font-weight: 400;
+    text-align: center;
+    flex: 1 100%;
+}
+
+.noise-threshold-toggle .mat-button-toggle-checked {
+    background-color: rgba(103, 58, 183, 0.8) !important;
+    font-weight: 400;
+    color: white;
+}
+
+.noise-threshold-toggle {
+    width: 75%;
+    max-width: 1000px;
+    flex: 1 1 100%;
+    box-sizing: border-box;
+    align-items: center;
+    flex-direction: row;
+    display: flex;
+}
+
+.noise-threshold-toggle-disabled-button {
+    background-color: rgba(251, 163, 0, 0.829) !important;
+}
+
+.co2-heading-icon {
+    font-size: 40px;
+}
+
+:host ::ng-deep .co2-customization-content .ngx-slider {
+    width: 80%;
+    margin-left: 20px;
+    margin-top: 0px;
+}
+
+.co2-card-actions {
+    margin-top: 30px;
+}
+
+/* bar in background */
+
+:host ::ng-deep .co2-customization-content .ngx-slider .ngx-slider-bar {
+    background-image: linear-gradient(to right, red , yellow, green);;
+    opacity: 0.4;
+    height: 5px;
+}
+
+/* selection handles */
+
+:host ::ng-deep .co2-customization-content .ngx-slider .ngx-slider-pointer {
+    background-color: rgba(103, 58, 183, 0.97);
+    outline: none !important;
+}
+
+/* point in the middle of selection handle */
+
+:host ::ng-deep .co2-customization-content .ngx-slider .ngx-slider-pointer:after {
+    background-color: rgba(255, 193, 7, 0.8);
+}

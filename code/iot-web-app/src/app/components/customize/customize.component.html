@@ -1,0 +1,163 @@
+<div class="grid-container">
+    <h1 class="mat-h1">Customize Automation Policy</h1>
+    <div class="customize-component-container">
+        <div class="noise-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon class="co2-heading-icon">co2</mat-icon>
+                    </div>
+                    <mat-card-title>CO<sub>2</sub> Concentration Target</mat-card-title>
+                    <mat-card-subtitle>Set your CO<sub>2</sub> concentration goal</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content class="co2-customization-content">
+                    <p>
+                        Select your target for the CO<sub>2</sub> concentration in your office. 
+                        The system will try to keep the air quality above the target value.
+                        A lower CO<sub>2</sub> target value requires more ventilation resulting in the windows being open for longer.
+                        This may make other targets (e.g. noise isolation) harder to accomplish.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Air quality target:</p>
+                    <ngx-slider [(value)]="coSlider.value"
+                    [options]="coSlider.options"
+                    (userChangeEnd)="onCoTargetUserChange($event)"
+                    ></ngx-slider>
+                </mat-card-content>
+                <mat-card-actions class="co2-card-actions">
+                    <button mat-flat-button class="temp-reset-button"
+                    (click)="setCoToDefault()"
+                    >Default</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div class="temperature-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon aria-hidden="false" aria-label="Example home icon">thermostat</mat-icon>
+                    </div>
+                    <mat-card-title>Preferred Temperature Range</mat-card-title>
+                    <mat-card-subtitle>Set the preffered temperature range for your office building</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content class="temperature-customization-content">
+                    <p>
+                        The system will try to keep the room temperature within your target range.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Selected range:</p>
+                    <ngx-slider [(value)]="tempSlider.minValue" [(highValue)]="tempSlider.maxValue"
+                        [options]="tempSlider.options"
+                        (userChangeEnd)="onTempTargetUserChange($event)"
+                        ></ngx-slider>
+
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-flat-button class="temp-reset-button"
+                    (click)="setTempTargetToDefault()"
+                    >Default</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div class="noise-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon aria-hidden="false" aria-label="Example home icon">volume_up</mat-icon>
+                    </div>
+                    <mat-card-title>Ambient Noise Threshold</mat-card-title>
+                    <mat-card-subtitle>Select how sensitive the system should react to ambient noise</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        Tell the system how sensitive it should react to ambient noise coming into your office space. 
+                        The system will then avoid and reduce noise levels that exceed your threshold.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Noise sensitivity:</p>
+                    <mat-button-toggle-group class="noise-threshold-toggle"
+                    [(ngModel)]="this.selectedAmbientNoiseValue"
+                    (change)="this.onAmbientNoiseUserChange($event)"
+                    >
+                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="disabled">
+                            <mat-icon>not_interested</mat-icon>
+                            Disabled</mat-button-toggle>
+                        <mat-button-toggle value="low">Low Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="mid">Moderate Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="high">High Sensitivity</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-flat-button class="temp-reset-button"
+                    (click)="setAmbientNoiseToDefault()"
+                    >Default</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div class="noise-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon>wb_sunny</mat-icon>
+                    </div>
+                    <mat-card-title>Light Sensitivity</mat-card-title>
+                    <mat-card-subtitle>How much light is too much?</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        Tell the system how sensitive it should react to sunlight from the outside. 
+                        Higher sensitivity means that the system will use the blinds more actively. 
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Light sensitivity:</p>
+                    <mat-button-toggle-group class="noise-threshold-toggle"
+                    [(ngModel)]="this.selectedLightSenseValue"
+                    (change)="this.onLightSensUserChange($event)"
+                    >
+                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="disabled">
+                            <mat-icon>not_interested</mat-icon>
+                            Disabled</mat-button-toggle>
+                        <mat-button-toggle value="low">Low Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="mid">Moderate Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="high">High Sensitivity</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button class="temp-reset-button"
+                    (click)="setLightSenseToDefault()"
+                    >Default</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+        <div class="noise-threshold-container">
+            <mat-card>
+                <mat-card-header>
+                    <div mat-card-avatar>
+                        <mat-icon>air</mat-icon>
+                    </div>
+                    <mat-card-title>Wind Sensitivity</mat-card-title>
+                    <mat-card-subtitle>Select how sensitive the the system should react to wind</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                    <p>
+                        Tell the system how sensitive it should react to wind at different window locations. 
+                        The system will take your preference into account, when making its decisions.
+                    </p>
+                    <p class="temperature-range-selection-slider-header">Wind sensitivity:</p>
+                    <mat-button-toggle-group class="noise-threshold-toggle"
+                    [(ngModel)]="this.selectedWindSenseValue"
+                    (change)="this.onWindSensUserChange($event)"
+                    >
+                        <mat-button-toggle class="noise-threshold-toggle-disabled-button" value="disabled">
+                            <mat-icon>not_interested</mat-icon>
+                            Disabled</mat-button-toggle>
+                        <mat-button-toggle value="low">Low Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="mid">Moderate Sensitivity</mat-button-toggle>
+                        <mat-button-toggle value="high">High Sensitivity</mat-button-toggle>
+                    </mat-button-toggle-group>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button class="temp-reset-button"
+                    (click)="setWindSenseToDefault()"
+                    >Default</button>
+                </mat-card-actions>
+            </mat-card>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+.full-width-table {
+  width: 100%;
+}
+
+.grid-container {
+  margin: 20px;
+  height: 90%;
+}
+
+.sensor-list-container {
+  margin-left: 15px;
+}
+
+.mat-h1 {
+  padding-bottom: 16px;
+}
