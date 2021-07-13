@@ -68,7 +68,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
   <tr valign="top">
     <td align="center">
       <a target="_blank"><img src="../../graphics/web_app/terminal_pic.png" title="Terminal"></a>
-    <em>Console: Mock, Test, Debug website features</em>
+    <em>Console: Mock, Test and Debug website features</em>
     </td>
   </tr>
 </table>
