@@ -77,13 +77,15 @@ export class DataService {
     this.setupSensors();
   }
 
-  setupSensors(){
+  setupSensors() {
+    //subscribe to sensor topic
     this._mqttService.observe(this.sensorTopic).subscribe(msg => {
       this.sensorQueue.next(msg);
     })
   }
 
-  setupActuators(){
+  setupActuators() {
+    //subscribe to actuator topics
     this._mqttService.observe(this.actuatorTopic).subscribe(msg => {
       this.actuatorQueue.next(msg);
     });
@@ -92,7 +94,8 @@ export class DataService {
     });
   }
 
-  processSensorMessages(){
+  processSensorMessages() {
+    //wait for and process incoming sensor messages
     this.sensorQueue.pipe(concatMap(msg => of(msg))).subscribe((msg) => {
       let topicParts = msg.topic.split("/");
       let sensorType: string = topicParts[1], location: string = topicParts[2]
@@ -125,6 +128,7 @@ export class DataService {
         let sensor: Sensor = {location: location, type: sensorType, value: msg.payload.toString()};
         this.sensors.set(JSON.stringify([location, sensorType]), sensor);
       }
+      //update list of connected sensors to reflect current state
       this.updateSensorList();
     });
   }
@@ -140,7 +144,8 @@ export class DataService {
     this.sensorList$.next(tempSensList);
   }
 
-  processActuatorMessages(){
+  processActuatorMessages() {
+    //wait for and process incoming actuator messages
     this.actuatorQueue.pipe(concatMap(msg => of(msg))).subscribe((msg) => {
       let topicParts = msg.topic.split("/");
       let actuatorType: string = topicParts[1], location: string = topicParts[2], msgType: string=topicParts[3];
@@ -190,6 +195,7 @@ export class DataService {
           }
         }
       }
+      //update list of connected actuators to reflect current state
       this.updateActuatorList();
     });
   }
@@ -265,23 +271,6 @@ export class DataService {
     // filter(message => message.id !== this.dataServiceId),
     map(message => message.data)
     ).subscribe(this.windSensPref$)
-  }
-
-  connect() {
-    //websocket
-    // console.log("connecting")
-    // this.socket = io('http://localhost:5000');
-    // this.socket.emit("log", "connected test message")
-  }
-
-  set_listeners() {
-    // this.socket.on('message', (data: any) => {
-    //   console.log("Received message from Websocket Server", data)
-    // })
-    // this.socket.on('exDataValue', (data: number) => {
-    //   console.log("Received exDataValue: ", data)
-    //   this.exDataValue = Math.round(data * 100) / 100
-    // })
   }
 
   processActuatorStatusUpdates(statusUpdate: StatusUpdate) {

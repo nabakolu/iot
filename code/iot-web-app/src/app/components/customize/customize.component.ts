@@ -22,7 +22,7 @@ interface coSliderModel {
   styleUrls: ['./customize.component.css']
 })
 export class CustomizeComponent implements OnInit {
-
+  //variable storing current state of the temperature slider
   tempSlider: TempSliderModel = {
     minValue: 15,
     maxValue: 30,
@@ -42,7 +42,7 @@ export class CustomizeComponent implements OnInit {
       }
     },
   };
-
+  //variable storing current state of the co2 slider
   coSlider: coSliderModel = {
     value: 5,
     options: {
@@ -58,10 +58,14 @@ export class CustomizeComponent implements OnInit {
       ],
     },
   };
+  //var storing current state of the ambient noise sensetivity
   selectedAmbientNoiseValue?: string;
+  //var storing current state of the light sensitivity
   selectedLightSenseValue?: string;
+  //var storing current state of the wind sensitivity
   selectedWindSenseValue?: string;
 
+  //subjects to handle value changes from client
   coPreference$: Subject<number> = new Subject<number>();
   tempPreference$: Subject<any> = new Subject<Array<number>>();
   ambientNoisePref$: Subject<any> = new Subject<string>();
@@ -109,69 +113,84 @@ export class CustomizeComponent implements OnInit {
   }
 
   onCoTargetUserChange(context: ChangeContext){
+    //handle user change of co2 target
     this.coPreference$.next(context.value);
   }
 
-  onCoTargetServerChange(message: any){
+  onCoTargetServerChange(message: any) {
+    //handle change message of co2 target from broker
     this.coSlider.value = message;
   }
 
-  setCoToDefault(){
+  setCoToDefault() {
+    //set the current co2 target to the default value
     this.coPreference$.next(4);
     this.coSlider.value = 4;
   }
 
-  onTempTargetUserChange(context: ChangeContext){
+  onTempTargetUserChange(context: ChangeContext) {
+    //handle temperature range change from client
     this.tempPreference$.next([context.value, context.highValue]);
   }
 
-  onTempTargetServerChange(message: any){
+  onTempTargetServerChange(message: any) {
+    //handle temperature range change from broker
     console.log("message temp arr")
     this.tempSlider.minValue = message[0];
     this.tempSlider.maxValue = message[1];
   }
 
-  setTempTargetToDefault(){
+  setTempTargetToDefault() {
+    //set temperature target to default range
     this.tempPreference$.next([17, 23]);
     this.tempSlider.minValue = 17;
     this.tempSlider.maxValue = 23;
   }
 
-  onAmbientNoiseUserChange(changeEv: any){
+  onAmbientNoiseUserChange(changeEv: any) {
+    //handle ambient noise preference change from client
     this.ambientNoisePref$.next(changeEv.value);
   }
 
-  onAmbientNoiseServerChange(message: string){
+  onAmbientNoiseServerChange(message: string) {
+    //handle ambient noise preference change from broker
     this.selectedAmbientNoiseValue = message;
   }
 
-  setAmbientNoiseToDefault(){
+  setAmbientNoiseToDefault() {
+    //set ambient noise to default
     this.ambientNoisePref$.next("mid");
     this.selectedAmbientNoiseValue = "mid";
   }
 
-  onLightSensUserChange(changeEv: any){
+  onLightSensUserChange(changeEv: any) {
+    //handle light sensitivity preference change from client
     this.lightSensPref$.next(changeEv.value);
   }
 
-  onLightSensServerChange(message: string){
+  onLightSensServerChange(message: string) {
+    //handle light sensitivity preference change from broker
     this.selectedLightSenseValue = message;
   }
 
-  setLightSenseToDefault(){
+  setLightSenseToDefault() {
+    //set light sensitivity to default
     this.lightSensPref$.next("mid");
     this.selectedLightSenseValue = "mid";
   }
 
-  onWindSensUserChange(changeEv: any){
+  onWindSensUserChange(changeEv: any) {
+    //handle wind sensitivity preference change from user
     this.windSensPref$.next(changeEv.value);
   }
 
-  onWindSensServerChange(message: string){
+  onWindSensServerChange(message: string) {
+    //handle wind sensitivity preference change from broker
     this.selectedWindSenseValue = message;
   }
 
-  setWindSenseToDefault(){
+  setWindSenseToDefault() {
+    //set wind sensitivity to default
     this.windSensPref$.next("mid");
     this.selectedWindSenseValue = "mid";
   }

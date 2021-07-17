@@ -13,13 +13,14 @@ import { Actuator } from 'src/app/services/sensorInterfaces';
 export class WindowControlComponent implements OnInit {
   @Input() windowLoc!: string;
 
-
+  //store selected mode of window
   selectedWindowModeIndex?: number = undefined;
+  //store selected mode of blind
   selectedBlindsModeIndex?: number = undefined;
 
 
   windowstate!: Actuator | undefined;
-
+  //handle changes of windows and blind modes
   windowmode$: Subject<string> = new Subject<string>();
   blindmode$: Subject<string> = new Subject<string>();
   constructor(public dataServiceInstance: DataService, private _mqttService: MqttService) {
@@ -41,6 +42,7 @@ export class WindowControlComponent implements OnInit {
   }
 
   updateWindowModeMQTT(mode$: Observable<string>) {
+    //listen to changes of window mode from client
     mode$.pipe(
       debounceTime(600),
       distinctUntilChanged()
@@ -55,6 +57,7 @@ export class WindowControlComponent implements OnInit {
   }
 
   updateBlindModeMQTT(mode$: Observable<string>) {
+    //listen to changes of the blind mode from client
     mode$.pipe(
       debounceTime(600),
       distinctUntilChanged()
@@ -68,7 +71,8 @@ export class WindowControlComponent implements OnInit {
   });
   }
 
-  setBlindMode(mode: string){
+  setBlindMode(mode: string) {
+    //set blind mode
     this.getBlind()!.setting = mode; 
     this.blindmode$.next(mode);
   }

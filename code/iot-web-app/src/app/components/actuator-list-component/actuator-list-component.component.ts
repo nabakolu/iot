@@ -26,7 +26,9 @@ export class ActuatorListComponentComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    //init data source
     this.initDs();
+    //start listening for changes
     this.onAvailActuatorsChange();
   }
 
@@ -36,8 +38,10 @@ export class ActuatorListComponentComponent implements AfterViewInit {
     this.table.dataSource = this.dataSource;
   }
 
-  onAvailActuatorsChange(){
+  onAvailActuatorsChange() {
+    // subscribe to changes
     this.dataServiceInstance.actuatorList$.subscribe((updatedList) => {
+      // update underliying datasource
       this.dataSource = new ActuatorListComponentDataSource(updatedList);
       this.initDs();
     })

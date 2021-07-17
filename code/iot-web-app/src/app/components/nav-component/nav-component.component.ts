@@ -12,7 +12,7 @@ export class NavComponentComponent {
 
   backgroundImage = "src\assets\images\sidebar-background/cracks.jpg"
   selectedItemIndex: number;
-
+  //contains all items visible in the web apps navigation sidebar
   sidebarNavItems = [
     {
       name: "Dashboard",
