@@ -9,43 +9,56 @@ import uuid
 import random
 import time
 
+
 class Sensor(ABC):
+    """abstract base class for all simulated sensor types"""
+
     def __init__(self, simulation_interval: int=15) -> None:
         """Initialises mqtt connection for sensor and simulation loop
 
         Args:
             simulation_interval (int, optional): Interval at which to simulate value change in seconds. Defaults to 15.
         """
+        #time interval that determines the simulation frequency 
         self.simulation_interval: int = simulation_interval
         self.lastsimulation: dt.datetime = dt.datetime.now()
+        #initialize the sensors mqtt connection
         self.init_sensor_mqtt()
+        #initialize the value simulation of the sensor
         self.simulation_thread: Thread = Thread(target=self.simulation_loop, daemon=True)
         self.simulation_thread.start()
+
     def simulation_loop(self):
+        """loop to simulate change over time"""
         while True:
             self.publish_value()
             time.sleep(self.simulation_interval)
             self.simulate_value()
             
     def publish_value(self):
+        """publishes the sensors value to the mqtt broker"""
         if self.location:
             self.client.publish(f"sensors/{self.type}/{self.location}", payload="{:.2f}".format(self.value), qos=1, retain=True)
         else:
             self.client.publish(f"sensors/{self.type}", payload="{:.2f}".format(self.value), qos=1, retain=True)
     @property
     @abstractmethod
-    def type(self): 
+    def type(self):
+        """sensor type information""" 
         return NotImplementedError
     @property
     @abstractmethod
-    def location(self): 
+    def location(self):
+        """sensor location information"""
         return NotImplementedError
     @property
     @abstractmethod
-    def value(self): 
+    def value(self):
+        """property to store the current sensor value"""
         return NotImplementedError
     @abstractmethod
-    def simulate_value(self): 
+    def simulate_value(self):
+        """function that simulates the value change between two simulation intervals"""
         return NotImplementedError
     def __str__(self) -> str:
         return str(self.type) + str(self.location) 
@@ -55,34 +68,45 @@ class Sensor(ABC):
         """        
         return (dt.datetime.now()-self.lastsimulation).total_seconds()/60
     def init_sensor_mqtt(self):
+        #create mqtt client
         self.client = mqtt.Client(client_id=str(uuid.uuid1()))
         self.client.username_pw_set(username="iotproject", password="iotaccesspw%")
+        #init last will for automatic disconnection
         if self.location:
             self.client.will_set(f"sensors/{self.type}/{self.location}", payload="", qos=1, retain=True)
         else:
             self.client.will_set(f"sensors/{self.type}", payload="", qos=1, retain=True)
         self.client.connect("82.165.70.137", 1884, 60)
+        #start new thread for mqtt client
         self.clientloop_thread = Thread(target=self.client.loop_forever, daemon=True)
         self.clientloop_thread.start()
 
 class DataService():
     def __init__(self) -> None:
+        #init mqtt client
         self.init_mqtt()
+        #current outside temp
         self.outside_temp = None
+        #current state of connected windows
         self.windows: dict[str, str] = {}
+        #current state of heater
         self.heating_power = None
 
     def init_mqtt(self):
+        #init mqtt client and start new thread for it
         self.client = mqtt.Client(client_id=str(uuid.uuid1()))
         self.client.username_pw_set(username="iotproject", password="iotaccesspw%")
         self.client.on_message=self.on_message
         self.client.connect("82.165.70.137", 1884, 60)
         self.clientloop_thread = Thread(target=self.client.loop_forever, daemon=True)
         self.clientloop_thread.start()
+        #subscribe to relevant topics
         self.client.subscribe("sensors/temperature/outside")
         self.client.subscribe("actuators/windows/+/status")
-        #change power to status power only used to debug
-        self.client.subscribe("actuators/heating/power")
+        #use power for debug
+        #self.client.subscribe("actuators/heating/power")
+        #use status for production
+        self.client.subscribe("actuators/heating/status")
 
     def on_message(self, client, userdata, msg):
         if msg.topic == "sensors/temperature/outside":
@@ -92,8 +116,12 @@ class DataService():
             self.windows[location] = str(msg.payload.decode("utf-8"))
         elif msg.topic == "actuators/heating/power":
             self.heating_power = float(msg.payload.decode("utf-8"))
+        elif msg.topic == "actuators/heating/status":
+            self.heating_power = float(msg.payload.decode("utf-8"))
 
 class TemperatureSensor(Sensor):
+    """simulates a temperature sensor"""
+
     def __init__(self, init_value=20, inside: bool=False, dataService: DataService=None, simulation_interval: int=3) -> None:
         self._type="temperature"
         self._value = init_value
@@ -128,26 +156,27 @@ class TemperatureSensor(Sensor):
             self.simulate_outside()
 
     def simulate_inside(self):
+        """simulates inside temperature in value range [0, 50]"""
         tdelta = self.get_simulation_delta_time()
         if self.dataService.outside_temp:
             #temperature value is slowly drawn to outside temperature
             self.value += (self.dataService.outside_temp-self.value)*0.01*tdelta
             #effect of open windows
             num_open_win = sum(map(lambda win: int(win=="open"), self.dataService.windows.values()))
-            self.value += (self.dataService.outside_temp-self.value)*0.07*tdelta*num_open_win
+            self.value += (self.dataService.outside_temp-self.value)*0.02*tdelta*num_open_win
             #effect of heating
             if self.dataService.heating_power:
-                self.value += (self.max_heater_temp-self.value)*tdelta*0.03*self.dataService.heating_power
+                self.value += (tdelta*2.5*self.dataService.heating_power/100)
             #range restriction
-            self.value = max(-15, min(self.value, 50))
+            self.value = max(0, min(self.value, 50))
         self.lastsimulation = dt.datetime.now()
 
     def simulate_outside(self):
         """simulates temperature change over time
-        temperature range is limited to [-15, 50]
+        temperature range is limited to [0, 50]
         """
         tdelta = self.get_simulation_delta_time()
-        self.value = max(-15, min(self.value+np.random.uniform(-self.change_per_minute*tdelta, self.change_per_minute*tdelta),50))
+        self.value = max(0, min(self.value+np.random.uniform(-self.change_per_minute*tdelta, self.change_per_minute*tdelta),50))
         self.lastsimulation = dt.datetime.now()
 
 
@@ -188,6 +217,8 @@ class WindSensor(Sensor):
         self.lastsimulation = dt.datetime.now()
 
 class NoiseSensor(Sensor):
+    """simulated sensor for ambient noise"""
+
     def __init__(self, location: str, init_value=50, dataService=None, simulation_interval: int=3) -> None:
         self._type="noise"
         #noise in decibels
@@ -267,7 +298,9 @@ class CoSensor(Sensor):
 
     
 # %%
+#init data source
 data = DataService()
+#init different sensors
 out_temp = TemperatureSensor()
 in_temp = TemperatureSensor(25, True, data)
 noise_east = NoiseSensor("east")
@@ -279,14 +312,15 @@ co = CoSensor(data)
 sensor_list: Sensor = [out_temp, in_temp, noise_east, noise_west, wind_east, wind_west, co]
 # %%
 def show_status():
-        status = ""
-        for sensor in sensor_list:
-            stat_string = f"Type: {sensor.type} Location: {sensor.location} Current val: {str(sensor.value)[:str(sensor.value).find('.')+3]}\n"
-            status += stat_string
-        print(status)
+    """shows status of differnet senosrs in sensor_list"""
+    status = ""
+    for sensor in sensor_list:
+        stat_string = f"Type: {sensor.type} Location: {sensor.location} Current val: {str(sensor.value)[:str(sensor.value).find('.')+3]}\n"
+        status += stat_string
+    print(status)
 
 # %%
-
+#prevent console command errors from interrupting the simulation
 def nofail(f):
     def save_exec(*args, **kwargs):
         try:
@@ -296,6 +330,7 @@ def nofail(f):
     return save_exec
 
 class cli(cmd.Cmd):
+    """cli interface to manually set sensor values"""
     prompt = "> "
 
     def do_status(self, line):
