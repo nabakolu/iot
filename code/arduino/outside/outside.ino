@@ -16,6 +16,7 @@ PubSubClient mqtt(espClient);
 
 void setup() {
 	Serial.begin(9600);
+	// connect to WiFi
 	WiFi.begin(ssid, password);
 	while (WiFi.status() != WL_CONNECTED) {
 		delay(500);
@@ -23,12 +24,14 @@ void setup() {
 	}
 	Serial.println("Connected to the WiFi network");
 
+	// set mqtt config
 	mqtt.setServer(mqttServer, mqttPort);
 
+	// connect to mqtt broker
 	while (!mqtt.connected()) {
 		Serial.println("Connecting to MQTT...");
 
-		if (mqtt.connect("outside", mqttUser, mqttPassword )) {
+		if (mqtt.connect("outside", mqttUser, mqttPassword, "sensors/rain", 1, true, "" )) {
 
 			Serial.println("connected");  
 
@@ -45,9 +48,9 @@ void setup() {
 
 
 void loop() {
-	int val = 1 - digitalRead(rainPIN);
+	int val = 1 - digitalRead(rainPIN); // read sensor data
 	char val_s[2];
-	itoa(val, val_s, 10);
-	mqtt.publish("sensors/rain", val_s);
+	itoa(val, val_s, 10); // convert data to string
+	mqtt.publish("sensors/rain", val_s); // publish data
 	delay(1000);
 }

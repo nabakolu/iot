@@ -16,8 +16,10 @@ PubSubClient mqtt(espClient);
 int command = 0;
 int power = 0;
 
-bool heating_auto = true;
+bool heating_auto = true; // specifies if heater is on auto mode (true) or manual mode (false)
 
+// sets heating to a specific level from 0-100.
+// as heater is shwon with an LED, set brightness of the LED
 void set_heating(int x){
 	// make some LED stuff
 	analogWrite(heatinPIN, map(x, 0, 100, 0, 255));
@@ -29,6 +31,7 @@ void set_heating(int x){
 
 void setup() {
 	Serial.begin(9600);
+	// Connect to WiFi
 	WiFi.begin(ssid, password);
 	while (WiFi.status() != WL_CONNECTED) {
 		delay(500);
@@ -36,9 +39,11 @@ void setup() {
 	}
 	Serial.println("Connected to the WiFi network");
 
+	// Set mqtt config
 	mqtt.setServer(mqttServer, mqttPort);
 	mqtt.setCallback(callback);
 
+	// Connect to mqtt broker
 	while (!mqtt.connected()) {
 		Serial.println("Connecting to MQTT...");
 
@@ -55,12 +60,14 @@ void setup() {
 		}
 	}
 
+	// subscribe to topics
 	mqtt.subscribe("actuators/heating/command");
 	mqtt.subscribe("actuators/heating/power");
 	mqtt.subscribe("actuators/heating/mode");
 
 }
 
+// callback function gets called for each incoming message
 void callback(char* topic, byte* payload, unsigned int length) {
 	char message[length+1]; // will later contain only the message, without sender information
 	for(int i = 0; i < length; i++){ // copy message from payload to message
