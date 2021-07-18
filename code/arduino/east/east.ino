@@ -62,6 +62,7 @@ void open_blinds(){
 
 void setup() {
 	Serial.begin(9600);
+	// Connect to WiFi
 	WiFi.begin(ssid, password);
 	while (WiFi.status() != WL_CONNECTED) {
 		delay(500);
@@ -69,9 +70,11 @@ void setup() {
 	}
 	Serial.println("Connected to the WiFi network");
 
+	// Set mqqt config info
 	mqtt.setServer(mqttServer, mqttPort);
 	mqtt.setCallback(callback);
 
+	// Connect to mqtt broker
 	while (!mqtt.connected()) {
 		Serial.println("Connecting to MQTT...");
 
@@ -88,21 +91,22 @@ void setup() {
 		}
 	}
 
+	// subscribe to topics
 	mqtt.subscribe("actuators/windows/east/command");
 	mqtt.subscribe("actuators/windows/east/mode");
 	mqtt.subscribe("actuators/blinds/east/command");
 	mqtt.subscribe("actuators/blinds/east/mode");
 
-
-
+	// attach the servos at the specific pins
 	window.attach(window_pin);
 	blinds.attach(blinds_pin);
 
-
+	// close window and blinds as starting position
 	close_window();
 	close_blinds();
 }
 
+// callback function which is called for each incoming message
 void callback(char* topic, byte* payload, unsigned int length) {
 	char message[length+1]; // will later contain only the message, without sender information
 	for(int i = 0; i < length; i++){ // copy message from payload to message
