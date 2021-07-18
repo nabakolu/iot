@@ -259,6 +259,7 @@ class CoSensor(Sensor):
         #value in ppm
         self._value = init_value
         self._location = "inside"
+        #dataService associated with this sensor
         self.dataService = dataService
         self.change_per_minute = 15
         self.window_impact = 20
@@ -292,6 +293,7 @@ class CoSensor(Sensor):
         num_open_win = sum(map(lambda win: int(win=="open"), self.dataService.windows.values()))
         self.value -= tdelta*self.window_impact*random.random()*num_open_win
         self.value = min(20000, max(200, self.value))
+        #set lastsimulation timestamp to current timestamp
         self.lastsimulation = dt.datetime.now()
         
 

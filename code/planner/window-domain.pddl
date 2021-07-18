@@ -11,15 +11,15 @@
             (open ?w - actuator)
             (closed ?w - actuator)
             ; windows
-            (action_available ?w - window)
-            (not_action_available ?w - window)
+            (action_available ?w - window);prevent multiple window actions      
+            (not_action_available ?w - window) ;prevent multiple window actions
             ; heater
-            (heater_action_available ?h - heater)
+            (heater_action_available ?h - heater)   ;prevent multiple heater actions
             (heater_off ?h - heater)
             (heater_on ?h - heater)
             ;blinds
-            (blinding ?w - blind)
-            (not_blinding ?w - blind)
+            (blinding ?w - blind) ;blinding light at blind
+            (not_blinding ?w - blind) ;avoid negative preconditions
             (not_blinding_initial ?w - blind)
 
 )
@@ -51,8 +51,8 @@
 
 (:action openwindow
 :parameters (?window - window)
-:precondition (and ;(closed ?window)
-                (action_available ?window)
+:precondition (and
+                (action_available ?window) ;only allow action if window was not operated before
 )
 :effect  (and 
                 (open ?window)
@@ -60,7 +60,7 @@
                 (not (action_available ?window))
                 (not_action_available ?window)
                 (assign (any_window_open) 1)
-                ;(assign (co2metric) (- (co2metric) (ambientnoise ?window)))
+            ;update co2 reward
             (assign
                 (co2metric)
                 (+ co2metric (- (co2) (+ (ambientnoise ?window) (+ (wind ?window) (rain ?window))))))
@@ -68,9 +68,11 @@
 
 (:action turn_heater_on
     :parameters (?heater - heater)
-    :precondition (and ;(heater_off ?heater)
-                        (heater_action_available ?heater)
+    :precondition (and
+                        (heater_action_available ?heater) ;only allow action if heater has not taken action before
                         (< (curr_temp ?heater) (min_temp ?heater))
+                        ;only allow heater action after all windows where operated
+                        ;this is used since the reward for the heater depends on if windows are open or not
                         (forall (?w - window)
                             (not_action_available ?w)
                         )
@@ -78,21 +80,17 @@
         :effect (and (not (heater_off ?heater))
             (heater_on ?heater)
             (not (heater_action_available ?heater))
-            ; (assign
-            ;     (heaterweight)
-            ;     (+ (heaterweight) (- (min_temp ?heater)
-            ;             (- (curr_temp ?heater) (* (any_window_open) (temperatureDiffOutside ?heater)))
-            ;         ))
+            ;update heater reward
             (assign (heaterweight) (+ (heaterweight) (- (- (min_temp ?heater) (curr_temp ?heater)) (* (any_window_open) (temperatureDiffOutside ?heater)))))
-                ;(min temp - current temp)-anywinopem*tempDiffoutside
     )
 )
 
 (:action turn_heater_off
     :parameters (?heater - heater)
-    :precondition (and ;(heater_on ?heater)
-                        (heater_action_available ?heater)
-                        ;(and (< (min_temp ?heater) (curr_temp ?heater))
+    :precondition (and
+                        (heater_action_available ?heater)   ;only allow action if heater has not taken action before
+                        ;only allow heater action after all windows where operated
+                        ;this is used since the reward for the heater depends on if windows are open or not
                         (forall (?w - window)
                             (not_action_available ?w)
                         )
@@ -101,57 +99,47 @@
     :effect (and (not (heater_on ?heater))
                 (heater_off ?heater)
                 (not (heater_action_available ?heater))
+                ;update heater reward
                 (increase (heaterweight) 0.1)
-                ;(assign (heaterweight) (+ (heaterweight) (* (any_window_open) (temperatureDiffOutside ?heater))))
     )
 )
 
 
 (:action closewindow
 :parameters (?window - window)
-:precondition (and ;(open ?window) 
-                    (action_available ?window))
+:precondition (and 
+                    (action_available ?window)) ;only allow action if window was not operated before
 :effect  (and   (closed ?window)
                 (not(open ?window))
-                (not (action_available ?window))
+                ;update co2 reward
                 (increase (co2metric) 0.1)
+                ;set availability of actions for this window
+                (not (action_available ?window))
                 (not_action_available ?window)
-                ; (not(high_noise ?window ?noise))
-                ; (low_noise ?window ?noise)
 ))
 
 (:action openblinds
 :parameters (?blind - blind)
-:precondition (and (closed ?blind)
-                    (not_blinding_initial ?blind)
+:precondition (and (closed ?blind) ;only allow if blinds to open if currently closed
+                    (not_blinding_initial ?blind)   ;if light is not blinding at blinds dont open
 )
-:effect  (and   (open ?blind)
+:effect  (and   (open ?blind) ;set current status to open
                 (not (closed ?blind))
+                ;reward for opening blind
                 (increase (blindsmetric) 1)
 ))
 
 (:action closeblinds
 :parameters (?blind - blind)
-:precondition (and (blinding ?blind)
-                    (open ?blind)
+:precondition (and (blinding ?blind)    ;only allow blinds to close if they have blinding light
+                    (open ?blind) ;only allow blinds to close if currently open
 )
-:effect  (and   (closed ?blind)
-                (not (open ?blind))
+:effect  (and   (closed ?blind) ;set current status to closed
+                (not (open ?blind)) 
+                ;remove blinding status, since blinds are now closed
                 (not(blinding ?blind))
                 (not_blinding ?blind)
 ))
-
-; (:durative-action heating_high
-;     :parameters (?heater - heater)
-;     :duration (and (< ?duration 60) (> ?duration 0))
-;     :condition ()
-;     :effect (and 
-;         (at start (and 
-;         ))
-;         (at end (and 
-;         ))
-;     )
-; )
 
 )
 
