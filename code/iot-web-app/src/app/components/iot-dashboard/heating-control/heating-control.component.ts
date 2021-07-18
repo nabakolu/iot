@@ -15,6 +15,7 @@ interface heaterIntensitySliderModel {
   styleUrls: ['./heating-control.component.css', './../iot-dashboard.component.css']
 })
 export class HeatingControlComponent implements OnInit {
+  //var to store heating slider state
   heaterIntensitySlider: heaterIntensitySliderModel = {
     options: {
       step: 0.1,
@@ -30,11 +31,12 @@ export class HeatingControlComponent implements OnInit {
       }
     }  
   }
-
+  //handle heater changes
   heatermode$: Subject<string> = new Subject<string>();
   heaterpower$: Subject<number> = new Subject<number>();
 
   constructor(public dataServiceInstance: DataService, private _mqttService: MqttService) {
+    //subscribe to changes
     this.updateHeaterModeMQTT(this.heatermode$.asObservable());
     this.updateHeaterPowerMQTT(this.heaterpower$.asObservable());
   }
@@ -42,16 +44,19 @@ export class HeatingControlComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  setHeatingMode(mode: string){
+  setHeatingMode(mode: string) {
+    //set heating mode
     this.dataServiceInstance.heater.setting = mode; 
     this.heatermode$.next(mode);
   }
 
-  onPowerSliderChange(context: ChangeContext){
+  onPowerSliderChange(context: ChangeContext) {
+    //push new manual power change
     this.heaterpower$.next(context.value);
   }
 
   updateHeaterModeMQTT(mode$: Observable<string>) {
+    //update heater mode state
     mode$.pipe(
       debounceTime(600),
       distinctUntilChanged()
@@ -66,6 +71,7 @@ export class HeatingControlComponent implements OnInit {
   }
 
   updateHeaterPowerMQTT(mode$: Observable<number>) {
+    //update heater power change
     mode$.pipe(
       debounceTime(600),
       distinctUntilChanged()

@@ -477,8 +477,8 @@ class PlanActionMgr:
             self.last_action_time = dt.datetime.now()
             self.planning_req.clear()
             #create problem for planner
-            self.create_planner_problem()
-            self.execute_planner()
+            temp_ins, max_temp = self.create_planner_problem()
+            self.execute_planner(temp_ins, max_temp)
 
 
     def notify(self) -> None:
@@ -520,7 +520,7 @@ class PlanActionMgr:
         with self.timer_set_lock:
             return self.delayed_timer_set
 
-    def execute_planner(self):
+    def execute_planner(self, temp_ins: float, max_temp: float):
         #call actual planner
         cmd = "wsl.exe optic-clp window-domain.pddl output_template.pddl"
         p = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -530,7 +530,7 @@ class PlanActionMgr:
         try:
             print("")
             print(p.stdout.decode("utf-8")[p.stdout.decode("utf-8").find(";;;; Solution Found"):])
-            execute_solution(p.stdout.decode("utf-8") , self.data.client)
+            execute_solution(p.stdout.decode("utf-8") , self.data.client, temp_ins, max_temp)
         except Exception as e:
             print("Exception in execute_solution():\n", e)
             #print(p.stdout)
@@ -567,6 +567,7 @@ class PlanActionMgr:
         #write problem file
         with open(dirname+"/output_template.pddl", "w") as f:
             f.write(p_template)
+        return temp_ins, preferences.temperature[1]
 
     def generate_goal_part(self, p_template, windows, blinds, heating) -> str:
         r_str = "(and\n"

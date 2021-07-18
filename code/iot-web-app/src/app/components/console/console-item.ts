@@ -4,13 +4,16 @@ export class ConsoleItem {
     content: string
     responseTo: string | undefined
 
-    constructor(input: boolean, content: string, responseTo?: string){
+    constructor(input: boolean, content: string, responseTo?: string) {
         this.id = this.uuidv4();
         this.input = input;
         this.content = content;
         this.responseTo = responseTo ? responseTo : undefined;
     }
 
+    /** 
+     * generate a uuidv4 string
+     */
     uuidv4(): string {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -18,15 +21,24 @@ export class ConsoleItem {
         });
     }
 
-    getId(){
+    /**
+     * get id of console item
+     */
+    getId(): string {
         return this.id;
     }
 
-    isInput(){
+    /**
+     * check if console item is a input
+     */
+    isInput(): boolean {
         return this.input;
     }
 
-    getContent(){
+    /**
+     * get text content of console item
+     */
+    getContent(): string {
         return this.content;
     }
 }

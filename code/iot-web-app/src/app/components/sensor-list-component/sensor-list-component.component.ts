@@ -35,7 +35,8 @@ export class SensorListComponentComponent implements AfterViewInit {
     this.table.dataSource = this.dataSource;
   }
 
-  onAvailSensorsChange(){
+  onAvailSensorsChange() {
+    //wait for changes then update underlying data
     this.dataServiceInstance.sensorList$.subscribe((updatedList) => {
       this.dataSource = new SensorListComponentDataSource(updatedList);
       this.initDs();

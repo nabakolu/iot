@@ -1,3 +1,4 @@
+//basic interfaces used by the data service
 export interface Actuator {
     type: string,
     location: string,

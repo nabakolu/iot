@@ -1,7 +1,7 @@
 import re
 import paho.mqtt.client as mqtt
 
-def execute_solution (solution: str, client: mqtt.Client):
+def execute_solution (solution: str, client: mqtt.Client, temp_ins: float, max_temp: float):
     """ parse output of planner and send respective mqtt messages """
     solution = solution.split(";;;; Solution Found")[1] # first get only the last part, in which the solution is listed
     solution = solution.split("\n") # split each line
@@ -25,6 +25,7 @@ def execute_solution (solution: str, client: mqtt.Client):
             client.publish("actuators/blinds/" + location + "/command", "close")
 
         if command == "turn_heater_on":
+            power = str(min(100, (max_temp-temp_ins)/20*100))
             client.publish("actuators/heating/command", "100")
 
         if command == "turn_heater_off":

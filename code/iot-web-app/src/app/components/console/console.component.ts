@@ -24,32 +24,41 @@ export class ConsoleComponent implements OnInit {
   ngAfterViewInit() { }
 
 
-  submitConsoleInput(){
+  submitConsoleInput() {
+    //new console command recevied
     this.commandMemory.splice(1, 0, this.consoleInput)
+    //update commandline memory
     this.indexInMemory = 0;
     this.commandMemory[0] = "";
+    //handle recevied input
     this.handleConsoleInput(this.consoleInput)
+    //clear console line
     this.clearConsole();    
   }
 
   consoleArrowNavigation(direction: string){
+    //enables the navigation of previous console commands using arrow keys
     let comp = this;
+    //handle up direction
     if (direction === "up"){
-      if (this.commandMemory.length > this.indexInMemory+1){
+      if (this.commandMemory.length > this.indexInMemory + 1) {
         this.commandMemory[this.indexInMemory] = this.consoleInput == "\n"? "": this.consoleInput;
         this.indexInMemory++;
         this.clearConsole();
         this.consoleInput = comp.commandMemory[comp.indexInMemory];
+        //timeout hack to manipulate dom
         setTimeout(function(){
           comp.areaElem.nativeElement.value=comp.commandMemory[comp.indexInMemory];
         },0);
       }
     }
+    //handle down direction
     else if (this.indexInMemory>0){
       this.commandMemory[this.indexInMemory] = this.consoleInput == "\n"? "": this.consoleInput;
       this.indexInMemory--;
       this.clearConsole();
       this.consoleInput = comp.commandMemory[comp.indexInMemory];
+      //timeout hack to manipulate dom
       setTimeout(function(){
         comp.areaElem.nativeElement.value=comp.commandMemory[comp.indexInMemory];
       },0);
@@ -68,21 +77,27 @@ export class ConsoleComponent implements OnInit {
 
 
   handleConsoleInput(input: string){
+    //handle new console input
     console.log(input)
+    //create new console item with input
     let inptItm: ConsoleItem = new ConsoleItem(true, input);
     let inptId: string = inptItm.getId();
     this.consoleContent.push(inptItm);
+    //execute the command
     let response = this.parseConsoleCommand(input);
+    //add response to console
     if (response) {
       this.consoleContent.push(new ConsoleItem(false, response, inptId))
     }
   }
 
-  focusInputArea(){
+  focusInputArea() {
+    //focus the console input element
     this.areaElem.nativeElement.focus();
   }
 
-  parseConsoleCommand(command: string) : string | null {
+  parseConsoleCommand(command: string): string | null {
+    //parse command and check if command is one of the available options
     if (command.toLowerCase().startsWith("help")) {
       return `This is the AWP commandline tool most commands are still under developement
 Available commands are:
